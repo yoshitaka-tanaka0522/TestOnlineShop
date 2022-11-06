@@ -1,0 +1,27 @@
+h1,h2{
+    font-family: 'Oswald', sans;
+}
+ul{
+    list-style: none;
+}
+li{
+    display: inline;
+}
+#list a{
+    margin-left: 70px;
+    margin-right: 70px;
+}
+
+body{
+    color:yellow;
+    font-family: 'Oswald' ,sans;
+    margin:10px 50px 10px 50px;
+    width: 950px;
+    background-color: black;
+}
+
+img{
+    float: left;
+    margin-right: 10px;
+
+}

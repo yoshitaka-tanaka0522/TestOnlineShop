@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+        var full_name="Yurino Miyashita"
+        var hits=0;
+        var spins=0;
+        var over_half=false;
+    </script>
+    <meta charset="utf-8">
+    <title>Smart Phone Store</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Cherry+Swash|Raleway" rel="stylesheet">
+
+    <link href="products-style.css" rel="stylesheet">
+</head>
+
+<body>
+    
+    <header>
+   
+        <script>
+         // var name = "steve"
+         document.write('<h1>'+full_name+"'s Used Smart Phone Store </h1>");
+        
+        var hits=0;
+        var spins=0;
+       
+        </script>
+       <p style="text-align: center; font-weight: bold;">
+        Hits:<span id="hits_span">0</span>
+        <br>
+        Spins:<span id="spins_span">0</span>
+        <br>
+        You win:<span id="win_span">pending...</span>
+     
+    
+    
+     Hit/Spin:<span id="hits_spins_span">0</span></p>
+     </header>
+    
+     <div>
+        <aside>
+            <div style="font-size:4rem;text-align:center;font-weight: bold;font-style: italic; color: white">
+                We sell from
+                around the globe!
+            </div>
+        </aside>
+
+    <main>
+            <section class="item"  
+            onmouseover="
+            if(!this.className.includes ('rotate')) {
+                this.className='item rotate';
+                spins_span.innerHTML=++spins;
+            }
+            hits_spins_span.innerHTML=(hits/spins).toFixed(2);
+                over_half=((spins<2*hits)&&(hits<spins))||over_half;
+                // -- Winning progress depends on hits/spins
+                hits_spins_ratio = hits/spins;
+                if ( hits_spins_ratio > 0 ) {
+                    progress = 'On your way!';
+                    if ( hits_spins_ratio >= 0.25 ) {
+                        progress = 'Almost there!';
+                        if ( hits_spins_ratio >= 0.5 ) {
+                            if( hits < spins) { 
+                                progress = 'You win!';
+            }
+        }
+    }
+}
+else {
+    progress = 'Get going!' ;
+    win_span.innerHTML=progress;
+}
+
+                hits_spins_span.innerHTML=(hits/spins).toFixed(2);
+                over_half=((spins<2*hits)&&(hits<spins))||over_half;
+                win_span.innerHTML=over_half;
+                "  
+            onclick="
+            if(this.className.includes ('rotate')) {
+                this.className='item';
+                hits_span.innerHTML=++hits;
+            } else {
+                this.className='item rotate';
+            }
+                hits_spins_span.innerHTML=(hits/spins).toFixed(2);
+                over_half=((spins<2*hits)&&(hits<spins))||over_half;
+                // -- Winning progress depends on hits/spins
+                hits_spins_ratio = hits/spins;
+                if ( hits_spins_ratio > 0 ) {
+                    progress = 'On your way!';
+                    if ( hits_spins_ratio >= 0.25 ) {
+                        progress = 'Almost there!';
+                        if ( hits_spins_ratio >= 0.5 ) {
+                            if( hits < spins) { 
+                                progress = 'You win!';
+            }
+        }
+    }
+}
+else {
+    progress = 'Get going!' ;
+    win_span.innerHTML=progress;
+}
+
+
+                win_span.innerHTML=over_half;
+                ">
+                <h2>HTC</h2>
+                <p>$40.00</p>
+                <img src="http://dport96.github.io/ITM352/morea/080.flow-control-II/HTC.jpg" id="HTC" >
+            </section>
+
+            <section class="item"  onmouseover="this.className='item rotate';spins_span.innerHTML=++spins;hits_spins_span.innerHTML=(hits/spins).toFixed(2);win_span.innerHTML=(spins<2*hits)&&(hits<spins);"  onclick="this.className='item';hits_span.innerHTML=++hits;hit_spin_span.innerHTML=(hits/spins).toFixed(2);win_span.innerHTML=(spins<2*hits)&&(hits<spins);">
+                <h2>Apple</h2>
+                <p>$75.00</p>
+                <img src="http://dport96.github.io/ITM352/morea/080.flow-control-II/iphone-3gs.jpg">
+            </section>
+
+            <section class="item"  onmouseover="this.className='item rotate';spins_span.innerHTML++;" onclick="this.className='item';hits_span.innerHTML++;">
+                <h2>Nokia</h2>
+                <p>$35.00</p>
+                <img src="http://dport96.github.io/ITM352/morea/080.flow-control-II/Nokia.jpg">
+            </section>
+
+            <section class="item"  onmouseover="this.className='item rotate';spins_span.innerHTML++;" onclick="this.className='item';hits_span.innerHTML++;">
+                <h2>Samsung</h2>
+                <p>$45.00</p>
+                <img src="http://dport96.github.io/ITM352/morea/080.flow-control-II/Samsung.jpg">
+            </section>
+
+            <section class="item"  onmouseover="this.className='item rotate';spins_span.innerHTML++;" onclick="this.className='item';hits_span.innerHTML++;">
+                <h2>Blackberry</td>
+                </h2>
+                <p>$10.00</p>
+                <img src="http://dport96.github.io/ITM352/morea/080.flow-control-II/Blackberry.jpg">
+            </section>
+
+    </main>
+    </div>
+    <footer>
+        <h1>
+            Your One Stop For Used Phones
+        </h1>
+    </footer>
+</body>
+
+</html>
+
+

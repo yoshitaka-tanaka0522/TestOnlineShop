@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>  let params = (new URL(document.location)).searchParams; </script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+ <script>
+    if(params.has('qty_textbox')){
+    document.write(`Thank you for ordering ${params.get('qty_textbox')} things`);
+    } ;
+        
+    if (params.has('quantity_textbox')) {
+    quantity_form["quantity_textbox"].value = params.get('quantity_textbox');
+    checkQuantityTextbox(quantity_form["quantity_textbox"]);
+    };
+/*
+In order_page.html in replace the document.write() statement with window.
+location.href = "display_purchase.html" + document.location.search; and 
+remove the window.stop statement.
+*/
+ 
+ </script>
+</body>
+</html>
