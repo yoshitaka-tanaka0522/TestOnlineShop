@@ -51,7 +51,6 @@ app.post("/purchase", function (request, response, next) {
   var available_quantity = false;
   for (i in quantities) {
     console.log(quantities[i])
-    console.log(notAPosInt(quantities[i]))
     if (notAPosInt(quantities[i]) == false) {
       errors['quantity' + i] = `Please submit valid data for ${products[i].name}!` //if quantity enetred is invalid number 
     }
@@ -62,7 +61,8 @@ app.post("/purchase", function (request, response, next) {
       errors['quantity' + i] = `We currenly don't have ${(quantities[i])}${products[i].name}. please check our website later!`
     }
   }
-  //taking quantity entered to display in invoice
+  //taking quantity entered to display in invoice and direct to log in page
+  //changed login.html from invoice.html
   let quantity_object = {
     "quantity": JSON.stringify(quantities)
   }; //creating string by quantity_object
@@ -71,8 +71,8 @@ app.post("/purchase", function (request, response, next) {
     for (i in quantities) { //remove purchase quantity from inventory
       products[i].quantity_available -= Number(quantities[i]);
     } //sends invoice with quantity with quary string
-    response.redirect('./invoice.html?' + qs.stringify(quantity_object)); //inserting value as quary string to invoice.html table 
-  } else { //with errors, redirect to store.html  
+    response.redirect('./login.html?' + qs.stringify(quantity_object)); //inserting value as quary string to invoice.html table 
+  } else { //with errors, redirect to login.html  
     let errors_obj = {
       "errors": JSON.stringify(errors)
     };
@@ -80,5 +80,52 @@ app.post("/purchase", function (request, response, next) {
     response.redirect('./store.html?' + qs.stringify(quantity_object) + '&' + qs.stringify(errors_obj)); //redirect to store.html and display errors 
   }
 });
+
+let users_reg_data = require(__dirname + '/public/user.json');
+function isValidUserInfo(username, password, returnErrors = false) {
+  let errors = [];
+  let isUserError = false;
+  if(!users_reg_data[username]) {
+    console.log('ユーザーが存在しません。')
+    errors.push(`User does not exist`);
+  } else {
+    const storedPassword = users_reg_data[username]["password"]
+    console.log(`user.jsonに保存されているpassword${storedPassword}`);
+    if(storedPassword === password) {
+      isUserError = true;
+      console.log(`passwordが一致しています`)
+    } else {
+      console.log(`passwordが一致していません`)
+      errors.push(`Incorrect password or username`);
+    }
+  }
+  return {isUserError, errors}
+}
+
+app.post("/login-form", function (request, response, next) {
+    console.log(users_reg_data)
+    const body = request.body;
+    // console.log(body)
+    const username = body['username'];
+    const password = body['password'];
+    const quantityString = body['quantityString'];
+    console.log("bbb" + quantityString)
+    // console.log(`username---${username}`);
+    // console.log(`password---${password}`);
+    // console.log(`users_reg_data.dport---${users_reg_data.dport}`);
+    const {isUserError, errors} = isValidUserInfo(username, password)
+    if(isUserError === false) {
+      console.log('user情報NG')
+      console.log(errors)
+      let errors_obj = {
+        "errors": JSON.stringify(errors)
+      };
+      console.log(qs.stringify(errors_obj));
+      response.redirect('./login.html?' + qs.stringify(errors_obj)); //redirect to store.html and display errors       
+    } else {
+      response.redirect('./invoice.html?' + quantityString); 
+      console.log('OK')
+    }
+  });
 // Start server
-app.listen(5000, () => console.log(`listening on port 5000`));
+app.listen(8080, () => console.log(`listening on port 8080`));
