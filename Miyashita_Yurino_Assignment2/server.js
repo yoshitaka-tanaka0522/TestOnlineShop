@@ -133,7 +133,7 @@ app.post("/login_user", function (request, response) {
     // Receiving request processing from users
     const body = request.body;
     // Convert customer-entered email addresses to lowercase
-    const input_email = body['username'].toLowerCase();
+    const input_email = body['email'].toLowerCase();
     console.log("inputemail" + input_email)
     // Get password entered by customer
     const input_password = body['password'];body.password
@@ -155,6 +155,10 @@ app.post("/login_user", function (request, response) {
       response.redirect('./invoice.html?' + params.toString());
       return;
     }
+  });
+
+  app.get("/registration", function (request, response) {
+    console.log("aaa")
   });
 
   app.post("/registrate_user", function (request, response) {

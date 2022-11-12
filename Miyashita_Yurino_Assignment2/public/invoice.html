@@ -25,6 +25,7 @@
     <script>
         // taken from Example Assignment 1
         window.onload = function () {    
+          let params = (new URL(document.location)).searchParams;
           if (params.has('quantity')) {
             let quantity = JSON.parse(params.get('quantity'));
             let quantity_str = '';
@@ -33,6 +34,8 @@
             }
             alert(err_str);
           }
+          let fullName = params.get('fullname');
+          document.getElementById("username").textContent = fullName;
         }
       </script>    
 </head>
@@ -55,7 +58,8 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="text-center text-150">
-                            <span class="text-default-d3">Invoice: Sunday's Book</span>
+                            <span class="text-default-d3">Invoice: Sunday's Book</span><br>
+                            <span id="username" class="text-default-d3">Invoice: Sunday's Book</span>
                         </div>
                     </div>
                 </div>
