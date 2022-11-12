@@ -3,30 +3,26 @@
 // Based on Assignment 2 Examples, Momoka Michimoto (Fall 2021), Lab 12
 // Load Packages and Functions
 // Load Express Package
-var express = require('express');
-var app = express();
+let express = require('express');
+let app = express();
 // Load File System Package
-var fs = require('fs')
+let fs = require('fs')
 // Load Body-Parser Package
-var parser = require("body-parser");
+let parser = require("body-parser");
 // Load QueryString Package
 const qs = require('querystring');
-const {
-  response
-} = require('express');
-const {
-  URLSearchParams
-} = require('url');
+const { response } = require('express');
+const {URLSearchParams} = require('url');
 // Load Product Data
-var products = require(__dirname + '/products.json');
+let products = require(__dirname + '/products.json');
 // Initialize Quantity
 products.forEach((prod, i) => {
   prod.quantity_available = products[i].quantity_available
 })
 // Load User Data
-var filename = './public/data/user_data.json';
+let filename = './public/data/user_data.json';
 // Store Data from Purchase
-var qty_obj = {};
+let qty_obj = {};
 // Load Body
 app.use(express.urlencoded({
   extended: true
@@ -51,11 +47,11 @@ function checkQuantityTextbox(qtyTextbox) {
 // Processing Purchase Request (Validates Quantities & Checks Availability)
 app.post("/purchase", function (request, response, next) {
   // Get quantities from body
-  var quantities = request.body['quantity'];
+  let quantities = request.body['quantity'];
   // Start with no errors
-  var errors = {};
+  let errors = {};
   // Start with no quantities available
-  var available_quantity = false;
+  let available_quantity = false;
   // Get quantity data
   for (i in quantities) {
     // Validate quantity inputted
@@ -103,8 +99,8 @@ app.post("/purchase", function (request, response, next) {
 // ---------------------------- Log-in -------------------------------- //
 if (fs.existsSync(filename)) {
   // Lab 13 Example
-  var data_str = fs.readFileSync(filename, 'utf-8');
-  var user_str = JSON.parse(data_str);
+  let data_str = fs.readFileSync(filename, 'utf-8');
+  let user_str = JSON.parse(data_str);
 } else {
   console.log(filename + ' does not exist.');
 }
@@ -112,10 +108,10 @@ if (fs.existsSync(filename)) {
 // Process login form POST and redirect to logged in page if ok, back to login page if not
 app.post("/process_login", function (request, response) {
   // Start with no errors
-  var errors = {};
+  let errors = {};
   // Pull data from login form
-  var the_email = request.body['email'].toLowerCase();
-  var the_password = request.body['password'];
+  let the_email = request.body['email'].toLowerCase();
+  let the_password = request.body['password'];
   // Check if entered password matches stored password (Lab 13)
   if (typeof user_str[the_email] != 'undefined') {
     if (user_str[the_email].password == the_password) {
@@ -128,11 +124,11 @@ app.post("/process_login", function (request, response) {
       // If no errors, redirect to invoice page with quantity data
       response.redirect('./invoice.html?' + params.toString());
       return;
-      // If password incorrect add to errors variable
+      // If password incorrect add to errors letiable
     } else {
       errors['login_error'] = `Incorrect password`;
     }
-    // If email incorrect add to errors variable
+    // If email incorrect add to errors letiable
   } else {
     errors['login_error'] = `Wrong E-Mail`;
   }
@@ -144,9 +140,9 @@ app.post("/process_login", function (request, response) {
 // ---------------------------- Registration -------------------------------- //
 app.post("/registration", function (request, response) {
   // Start with 0 registration errors
-  var registration_errors = {}
+  let registration_errors = {}
   // Import email from submitted page
-  var register_email = request.body['email'].toLowerCase();
+  let register_email = request.body['email'].toLowerCase();
   // Validate email address (From w3resource - Email Validation)
   if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(request.body.email) == false) {
     registration_errors['email'] = `Please enter a valid email address`;
@@ -185,7 +181,7 @@ app.post("/registration", function (request, response) {
     user_str[register_email] = {};
     user_str[register_email].password = request.body.password;
     user_str[register_email].email = request.body.email;
-    // Write data into user_data.json file via the user_str variable
+    // Write data into user_data.json file via the user_str letiable
     fs.writeFileSync(filename, JSON.stringify(user_str));
     // Add product quantity data
     qty_obj['email'] = register_email;
@@ -203,7 +199,7 @@ app.post("/registration", function (request, response) {
 // ---------------------------- Change Registration Details -------------------------------- //
 app.post("/change_password", function (request, response) {
   // Start with no errors
-  var reset_errors = {};
+  let reset_errors = {};
   // Pulls data inputed into the form from the body
   let current_email = request.body['email'].toLowerCase();
   let current_password = request.body['password'];
@@ -271,7 +267,7 @@ app.post("/change_password", function (request, response) {
 // Routing
 app.get("/products.json", function (request, response, next) {
   response.type('.js');
-  var products_str = `var products = ${JSON.stringify(products)};`;
+  let products_str = `let products = ${JSON.stringify(products)};`;
   response.send(products_str);
 });
 // Route all other GET requests to files in public

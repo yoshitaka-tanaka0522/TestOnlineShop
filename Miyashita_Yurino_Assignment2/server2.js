@@ -1,19 +1,19 @@
 
-var fs = require('fs');
-var myParser = require("body-parser");
-var qs = require('querystring');
-var express = require('express');
-var app = express();
+let fs = require('fs');
+let myParser = require("body-parser");
+let qs = require('querystring');
+let express = require('express');
+let app = express();
 
-var products = require('./product_data.json');
+let products = require('./product_data.json');
 
-var user_quantity_data; // make a global variable to hold the product selections until we get to the invoice
+let user_quantity_data; // make a global letiable to hold the product selections until we get to the invoice
 
-var filename = 'registration_data.json';
+let filename = 'registration_data.json';
 
 // get the user data
 if (fs.existsSync(filename)) {
-    var stats = fs.statSync(filename);
+    let stats = fs.statSync(filename);
     data = fs.readFileSync(filename, 'utf-8');
     users_reg_data = JSON.parse(data);
 } else {
@@ -153,7 +153,7 @@ app.post("/register", function (request, response) {
 
 app.use(express.static(__dirname + '/static'));
 
-var listener = app.listen(8080, () => { console.log('server started listening on port ' + listener.address().port) });
+let listener = app.listen(8080, () => { console.log('server started listening on port ' + listener.address().port) });
 
 // helper functions
 function isNonNegInt(q, return_errors = false) {

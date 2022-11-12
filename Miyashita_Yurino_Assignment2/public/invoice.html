@@ -26,7 +26,7 @@
         // taken from Example Assignment 1
         window.onload = function () {    
           if (params.has('quantity')) {
-            var quantity = JSON.parse(params.get('quantity'));
+            let quantity = JSON.parse(params.get('quantity'));
             let quantity_str = '';
             for (elem in quantity) {
                 quantity_str += quantity[elem] + '\n';
@@ -100,14 +100,14 @@
                         // taking quary string to array 
                         // copied from invoice.html from store 1 WODs
                             let params = (new URL(document.location)).searchParams;
-                            var quantities = JSON.parse(params.get("quantity"));
+                            let quantities = JSON.parse(params.get("quantity"));
                         </script>
 
 
                         <script> 
-                        var subtotal = 0;
+                        let subtotal = 0;
                         for (i = 0; i < products.length; i++) {
-                            var extended_price = (products[i].price * quantities[i]) //calculate extended price = quantity entered times product price 
+                            let extended_price = (products[i].price * quantities[i]) //calculate extended price = quantity entered times product price 
                             subtotal = subtotal + extended_price;    //calculate subtotal 
                             if (quantities[i] != 0) {      //i is not qual to 0 
                                 document.write(`
@@ -136,8 +136,8 @@
                    <script>
                     //taken from invoice.html from store 1 WODs 
                     //Compute tax 
-                    var tax_rate = 0.05;
-                    var tax = tax_rate * subtotal;
+                    let tax_rate = 0.05;
+                    let tax = tax_rate * subtotal;
 
                     //Computer shipping 
                     if (subtotal <= 15) {     //when shipping is less than $15, then shipping costs $3
@@ -152,7 +152,7 @@
 
 
                     //Compute grand total
-                     var total = subtotal + tax + shipping;
+                     let total = subtotal + tax + shipping;
 
 
                         document.write(`    

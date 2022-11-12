@@ -38,7 +38,7 @@
     let params = (new URL(document.location)).searchParams;
     window.onload = function () {    
       if (params.has('errors')) {
-        var errors = JSON.parse(params.get('errors'));
+        let errors = JSON.parse(params.get('errors'));
         let err_str = '';
         for (err in errors) {
           err_str += errors[err] + '\n';

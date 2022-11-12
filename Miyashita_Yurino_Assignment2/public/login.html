@@ -10,19 +10,30 @@
   <script>
     // taken from Example Assignment 1
     let params = (new URL(document.location)).searchParams;
-    window.onload = function () {    
+    window.onload = function () {
+      // クエリパラメータの取得
+      function retrieveGETqs() {
+      var query = window.location.search.substring(1);
+      return query;
+      /* 引数がない時は処理しない */
+      if (!query) return false;
+      }
+      //パラメータを取得
+      var str = retrieveGETqs();
+      prm = decodeURIComponent(str);
+      const registrationLink = document.getElementById('registrationLink');
+      registrationLink.addEventListener('click', ()=> {
+        alert(prm)
+        registrationLink.setAttribute('href', `registration.html?${(queryParam)}`)
+      })
+
       if (params.has('errors')) {
-        var errors = JSON.parse(params.get('errors'));
+        let errors = JSON.parse(params.get('errors'));
         let err_str = '';
         for (err in errors) {
           err_str += errors[err] + '\n';
         }
         alert(err_str);
-      }
-      if (params.has('quantity')) {
-        let quantity = JSON.parse(params.get('quantity'));
-        console.log(quantity)
-        document.getElementsByClassName("login-form")[0].insertAdjacentHTML('beforeend', `<input type="hidden" name="quantityString" value="${JSON.stringify(quantity)}" />`)
       }
     }
   </script> 
@@ -30,11 +41,11 @@
 <body>
 <div class="login-page">
   <div class="form">
-    <form class="login-form" action="login-form" method="POST">
-      <input id="#" type="text" id="#" placeholder="username" required name="username"/>
+    <form class="login-form" action="login_user" method="POST">
+      <input id="#" type="text" id="#" placeholder="email" required name="email"/>
       <input id="#" type="password" id="#" placeholder="password" required name="password"/>
       <button>login</button>
-      <p class="message">Not registered? <a href="registration.html"> Create an account</a></p>
+      <p class="message">Not registered? <a id="registrationLink" href="registration.html"> Create an account</a></p>
     </form>
 
   </div>
