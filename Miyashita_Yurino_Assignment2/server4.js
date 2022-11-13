@@ -13,4 +13,4 @@ const encode = (originalText) => {
   return text;
 };
 
-console.log(encode('grader'))
+console.log(encode('testpassword'))
