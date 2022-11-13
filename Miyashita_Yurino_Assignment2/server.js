@@ -1,8 +1,11 @@
 //created by Yurino Miyashita 
 //modified Blake Saari's server.js 
+
+
 // Load Express Package
 let express = require('express');
 let app = express();
+
 // Load Body-Parser Package
 let parser = require("body-parser");
 // Load QueryString Package
@@ -27,11 +30,28 @@ products.forEach((prod, i) => {
   prod.quantity_available = products[i].quantity_available
 })
 
-var qty_obj = {};
+var qty_obj = {};   //store quantity entered in store.html 
+
+
+// Module installation
+const crypto = require('crypto');
+// The key for encryption, originally written in the env file for security reasons
+const key = 'Ag3478eb15fh45019a5f9696c912cT62';
+
+const algorithm = 'aes-256-cbc';
+const delimiter = '$';
+
+const encode = (originalText) => {
+  const cipher = crypto.createCipher('aes-256-cbc', "pass")
+  const crypted = cipher.update(originalText, 'utf-8', 'hex')
+  const text = crypted + cipher.final('hex')
+  return text;
+};
+
 //determine if there is error in quantity text box.
 //copied from invoice.html in store 1 direcotry and modified 
 function notAPosInt(arrayElement, returnErrors = false) {
-  errors = []; // [] is to display below if functions,  assume no errors at first
+  errors = [];    // [] is to display below if functions,  assume no errors at first
   if (arrayElement == '') {
     arrayElement = 0;
   }
@@ -39,7 +59,7 @@ function notAPosInt(arrayElement, returnErrors = false) {
   if (Number(arrayElement) != arrayElement) errors.push('Not a number!'); // Check if string is a number value
   if (arrayElement < 0) errors.push('Negative value!'); // Check if it is non-negative
   if (parseInt(arrayElement) != arrayElement) errors.push('Not an integer!'); // Check that it is an integer
-  return (returnErrors ? errors : (errors.length == 0))
+  return (returnErrors ? errors : (errors.length == 0))  //if there is errors or not
 }
 // Routing taking json file    
 app.get("/products.json", function (request, response, next) {
@@ -47,6 +67,7 @@ app.get("/products.json", function (request, response, next) {
   let products_str = `let products = ${JSON.stringify(products)};`;
   response.send(products_str);
 });
+
 // Process purchase request (validate quantities, check quantity available)
 app.post("/purchase", function (request, response, next) {
   console.log(request.body); //getting request from invoice.html body
@@ -103,29 +124,28 @@ if(fs.existsSync(json_file_path)) {
   console.log(`File path ${json_file_path} not found `)
 }
 
-/**
- * Querying input user and json data
- * @type {boolean, array}
- */
+
+// Querying input user and json data 
 function isValidUserInfo(input_email, input_password) {
   let errors = [];
   let isUserError = false;
   // If user email key is undefined or key value does not exist
-  if(!users_reg_data[input_email]) {
-    isUserError = true;
+  if(!users_reg_data[input_email]) {       
+    isUserError = true;    //when there is error
     errors.push(`User does not exist`);
-  } else {
-    const stored_email = users_reg_data[input_email].email
-    const stored_password = users_reg_data[input_email].password
+  } else {    //email exists in user_data.json file 
+    const stored_email = users_reg_data[input_email].email      //take email address from json file
+    const stored_password = users_reg_data[input_email].password    //take password from json file 
     // If email does not match or password does not match
-    if(!(stored_email=== input_email) || !(stored_password === input_password)) {
+    const encrpt_input_password = encode(input_password)
+    if(!(stored_email=== input_email) || !(stored_password === encrpt_input_password)) {
       isUserError = true;
       // if you identify a problem with which one is wrong, there is a vulnerability problem, so an error is displayed that either one does not match
       errors.push(`Incorrect password or username`);
     }
   }
 
-  return {isUserError, errors}
+  return {isUserError, errors}    //if there error or not. 
 }
 
 // Processing after pressing the login button
@@ -139,32 +159,28 @@ app.post("/login_user", function (request, response) {
     const input_password = body['password'];body.password
     // Querying input user and json data
     const {isUserError, errors} = isValidUserInfo(input_email, input_password)
-    if(isUserError) {
-      let errors_obj = {
+    if(isUserError) {       //when there is error in log in
+      let errors_obj = { 
         "errors": JSON.stringify(errors)
       };
       console.log(qs.stringify(errors_obj));
-      response.redirect('./login.html?' + qs.stringify(errors_obj)); //redirect to store.html and display errors       
+      response.redirect('./login.html?' + qs.stringify(errors_obj)); //redirect to login.html and display errors       
     } else {
-      // If the password matches, use the object to pass the email address and full name to the next screen.
+      // If there is no error, redirect to invoice
+      //the password matches, use the object to pass the email address and full name to the next screen.
       qty_obj['email'] = input_email;
       qty_obj['fullname'] = users_reg_data[input_email].name;
       // Store quantity data
       let params = new URLSearchParams(qty_obj);
-      console.log(`params---${params}`);
-      response.redirect('./invoice.html?' + params.toString());
+      response.redirect('./invoice.html?' + params.toString());    //send quantity entred as string to invoice.html
       return;
     }
-  });
-
-  app.get("/registration", function (request, response) {
-    console.log("aaa")
   });
 
   app.post("/registrate_user", function (request, response) {
     // Start with 0 registration errors
     let registration_errors = {}
-    const input_email = request.body['email']
+    const input_email = request.body['email'].toLowerCase();
     const input_password = request.body['password']
     const input_confirm_password = request.body['confirm_Password']
     const input_username = request.body['username']
@@ -173,12 +189,13 @@ app.post("/login_user", function (request, response) {
     // Xには文字、数字、”＿”または、”.”が入る。Yには文字と数字が入る。　Zには、3文字まで入る
     if(input_email) {
       // Validate email address
+      //case insensive 
       // X@Y.Z　Xには文字、数字、”＿”または、”.”が入る
       // Yには文字と数字が入る
       // Zには、3文字まで入る
       const email_regex = /^[a-zA-Z0-9\_\.]+@([a-zA-Z0-9]*\.)+[a-zA-Z]{3}$/
       if (!(email_regex.test(input_email))) {
-        registration_errors['email'] = `Please enter a valid email address(Ex: johndoe@meatlocker.com)`;
+        registration_errors['email'] = `Please enter a valid email address(Ex: jonny@hawaii.edu)`;
       }
       // Validates that the email inputted has not already been registered
       if (typeof users_reg_data[input_email] != 'undefined') {
@@ -187,17 +204,15 @@ app.post("/login_user", function (request, response) {
     }
 
     // Validates that password is at least 10 characters
-    if (input_password.length < 10) {
-      registration_errors['password'] = `Password must be at least 10 characters`;
+    if (input_password.length < 10 && input_password.length >16 ) {
+      registration_errors['password'] = `Password must be at least 10 characters and at maximum 16 chacracters`;
     }
     // Validates that there is a password inputted
     else if (input_password.length == 0) {
       registration_errors['password'] = `Please enter a password`
     }
-    // 10文字以上
-    // CASE SENSITIVE　“ABC” と“abc”は違うもの
-    // スペースは使えない
-    const password_regex = /^[a-zA-Z0-9][^ |　]{10,}$/
+    //minimum 10 charcaters, Case sensitive, no space allowed 
+    const password_regex = /^[a-zA-Z0-9][^ |　]{10,}$/  
     if (!(password_regex.test(input_password))) {
       registration_errors['password'] = `Please correct format password`;
     }
@@ -206,27 +221,30 @@ app.post("/login_user", function (request, response) {
       registration_errors['confirm_password'] = `Your passwords do not match, please try again`;
     }
     // Validate that the full name inputted consists of A-Z characters exclusively
-    const username_regex = /^[A-Za-z]+$/
+    const username_regex = /^[A-Za-z, ]+$/      
     if (!(username_regex.test(input_username))) {
       registration_errors['username'] = `Please enter your first and last name`;
     }
-    // 名前は３０文字以内、２文字以上、文字だけ
+    // maximum 30 character, minimum 2 characters, only alphabet 
     if (input_username < 2 || input_username.length > 30) {
       registration_errors['username'] = `Please enter a name less than 30 characters`;
     }
-    
+
+    //when there is no error, format info inputted to the json file   
     if(Object.keys(registration_errors).length === 0) {
+      const encrypt_input_password = encode(input_password)
       users_reg_data[input_email] = {
         name: input_username,
-        password: input_password,
+        password: encrypt_input_password,
         email: input_email
       };
-      // Write data into user_data.json file via the user_str letiable
-      try {
-        fs.writeFileSync(json_file_path, JSON.stringify(users_reg_data));
+      // store data into user_data.json 
+      //try is for handle if there is any errors, 
+      try {  
+        fs.writeFileSync(json_file_path, JSON.stringify(users_reg_data));   
         // Add product quantity data
         qty_obj['email'] = input_email;
-        qty_obj['username'] = user_str[input_email].name;
+        qty_obj['username'] = users_reg_data[input_email].name;
         let params = new URLSearchParams(qty_obj)
         // If registered send to invoice with product quantity data
         response.redirect('./invoice.html?' + params.toString());

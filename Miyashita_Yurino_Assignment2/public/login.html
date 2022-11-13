@@ -7,6 +7,20 @@
   <title>Log in</title>
   <!--load cascading style sheet-->
   <link rel="stylesheet" href="./css/login-style.css">
+  <script>
+    // taken from Example Assignment 1
+    let params = (new URL(document.location)).searchParams;
+    window.onload = function () {
+      if (params.has('errors')) {
+        let errors = JSON.parse(params.get('errors'));
+        let err_str = '';
+        for (err in errors) {
+          err_str += errors[err] + '\n';
+        }
+        alert(err_str);
+      }
+    }
+  </script>
 </head>
 <body>
 <div class="login-page">
