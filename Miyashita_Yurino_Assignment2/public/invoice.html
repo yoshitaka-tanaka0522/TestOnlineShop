@@ -36,7 +36,7 @@
           let fullName = params.get('fullname');
           document.getElementById("username").textContent = fullName;
         }
-      </script>    
+      </script>
 </head>
 <body>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
@@ -221,5 +221,8 @@
     </table> 
 </center>
 </style>
+<script>
+    document.write(`<p class="message"><a href="/registration-update.html${location.search}"> Edit an account</a></p>`)
+  </script>
 </body>
 </html>

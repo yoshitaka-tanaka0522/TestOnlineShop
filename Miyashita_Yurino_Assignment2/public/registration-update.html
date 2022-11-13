@@ -9,23 +9,38 @@
   <title>Regiistration</title>
   <!--load cascading style sheet-->
   <link rel="stylesheet" href="./css/login-style.css">
-
+  <script>
+    // taken from Example Assignment 1
+    window.onload = function () { 
+      let params = (new URL(document.location)).searchParams;
+      if (params.has('quantity')) {
+        let quantity = JSON.parse(params.get('quantity'));
+        let quantity_str = '';
+        for (elem in quantity) {
+            quantity_str += quantity[elem] + '\n';
+        }
+      }
+      let fullName = params.get('fullname');
+      let email = params.get('email');
+      document.getElementById("username").value = fullName;
+      document.getElementById("currenteEmail").value = email;
+    }
+  </script>
 </head>
 
 <body> 
 
 <div class="login-page">
   <div class="form">
-    <form action="login-form">
-      <input type="text" placeholder="name" id="#"  name="#"/>
-      <input type="text" placeholder="email address" id="#" name="#"/>
-      <input type="text" placeholder="comfirm email address" id="#"  name="#" requied/>
-      <input type="password" placeholder="password" id="#"  name="#" required />
-      <input type="password" placeholder="comfirm password" id="#"  name="#"required/>
-      <button> <a href="invoice.html">Register</a></button>
-
+    <form action="registration-update" method="POST">
+      <input type="text" placeholder="name" id="username"  name="username"/>
+      <input type="text" placeholder="current email" id="currenteEmail" name="currenteEmail"/>
+      <input type="text" placeholder="new email" name="newEmail" requied/>
+      <input type="password" placeholder="current password" name="currentPassword" required />
+      <input type="password" placeholder="new password" name="newpassword" required/>
+      <input type="password" placeholder="confirm password" name="confirmPassword" required/>
+      <button> <a href="invoice.html">Update</a></button>
       <!--go back to log in page  or go to invoice -->
-
     </form>
 
   </div>
