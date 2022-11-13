@@ -185,8 +185,6 @@ app.post("/login_user", function (request, response) {
     const input_confirm_password = request.body['confirm_Password']
     const input_username = request.body['username']
     // If the password value entered by the user exists, do a format check on the email address
-    // X@Y.Z
-    // Xには文字、数字、”＿”または、”.”が入る。Yには文字と数字が入る。　Zには、3文字まで入る
     if(input_email) {
       // Validate email address
       //case insensive 
@@ -262,7 +260,6 @@ app.post("/login_user", function (request, response) {
     // Pulls data inputed into the form from the body
     let current_email = request.body['currenteEmail'].toLowerCase();
     let current_password = request.body['currentPassword'];
-    let new_email = request.body['newEmail'].toLowerCase();
     let new_password = request.body['newPassword'];
     let confirm_password = request.body['confirmPassword'];
     // Validates that email is correct format
@@ -274,7 +271,7 @@ app.post("/login_user", function (request, response) {
       registration_update_erros['email'] = `Please enter an current email address`
     }
     // Check if the re-entered update email address matches
-    if (new_password != confirmPassword) {
+    if (new_password != confirm_password) {
       registration_update_erros['confirmPassword'] = `password does not match`;
     }
 
@@ -309,7 +306,7 @@ app.post("/login_user", function (request, response) {
     
     // If there are no errors
     if (Object.keys(registration_update_erros).length == 0) {
-      users_reg_data[current_email].password = new_password
+      users_reg_data[current_email].password = encode(new_password)
       // update data into user_data.json 
       //try is for handle if there is any errors, 
       try {  
