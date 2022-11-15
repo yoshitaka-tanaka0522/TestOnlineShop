@@ -173,7 +173,7 @@ app.post("/login_user", function (request, response) {
 
   app.post("/registrate_user", function (request, response) {
     // Start with 0 registration errors
-    let registration_errors = {}
+    let registration_errors = []
     const input_email = request.body['email'].toLowerCase();
     const input_password = request.body['password']
     const input_confirm_password = request.body['confirm_Password']
@@ -182,45 +182,45 @@ app.post("/login_user", function (request, response) {
     if(input_email) {
       // Validate email address
       //case insensive 
-      const email_regex = /^[A-Za-z0-9_.]+@([A-Za-z0-9_.])+([a-zA-Z]{2}|[a-zA-Z]{3})$/
+      const email_regex = /^[A-Za-z0-9_.]+@([A-Za-z0-9_.]*\.)+([a-zA-Z]{2}|[a-zA-Z]{3})$/
       if (!(email_regex.test(input_email))) {
-        registration_errors['email'] = `Please enter a valid email address(Ex: jonny@hawaii.edu)`;
+        registration_errors.push(`Please enter a valid email address(Ex: jonny@hawaii.edu)`);
       }
       // Validates that the email inputted has not already been registered
       if (typeof users_reg_data[input_email] != 'undefined') {
-        registration_errors['email'] = `This email address has already been registered`;
+        registration_errors.push(`This email address has already been registered`);
       }
     }
 
     // Validates that password is at least 10 characters
     if (input_password.length < 10 || input_password.length > 16 ) {
-      registration_errors['password'] = `Password must be at least 10 characters and at maximum 16 chacracters`;
+      registration_errors.push(`Password must be at least 10 characters and at maximum 16 chacracters`);
     }
     // Validates that there is a password inputted
     else if (input_password.length == 0) {
-      registration_errors['password'] = `Please enter a password`
+      registration_errors.push(`Please enter a password`)
     }
     //minimum 10 charcaters, Case sensitive, no space allowed 
-    const password_regex = /^[a-zA-Z0-9][^ |　]{10,}$/  
+    const password_regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!#\$%&@;:])/
     if (!(password_regex.test(input_password))) {
-      registration_errors['password'] = `Please correct format password`;
+      registration_errors.push(`Please include at least special character, number, upper case and lower case`);
     }
     // Validates that the passwords match
     if (input_password != input_confirm_password) {
-      registration_errors['confirm_password'] = `Your passwords do not match, please try again`;
+      registration_errors.push(`Your passwords do not match, please try again`);
     }
     // Validate that the full name inputted consists of A-Z characters exclusively
     const fullname_regex = /^[A-Za-z, ]+$/      
     if (!(fullname_regex.test(input_fullname))) {
-      registration_errors['fullname'] = `Please enter your first and last name`;
+      registration_errors.push(`Please enter your first and last name`);
     }
     // maximum 30 character, minimum 2 characters, only alphabet 
     if (input_fullname < 2 || input_fullname.length > 30) {
-      registration_errors['fullname'] = `Please enter a name less than 30 characters`;
+      registration_errors.push(`Please enter a name less than 30 characters`);
     }
 
     //when there is no error, format info inputted to the json file   
-    if(Object.keys(registration_errors).length === 0) {
+    if(registration_errors.length === 0) {
       const encrypt_input_password = encode(input_password)
       users_reg_data[input_email] = {
         name: input_fullname,
@@ -252,56 +252,56 @@ app.post("/login_user", function (request, response) {
 
   app.post("/registration-update", function (request, response) {
     // Start with no errors
-    let registration_update_erros = {};
+    let registration_update_errors = [];
     // Pulls data inputed into the form from the body
     let current_email = request.body['currenteEmail'].toLowerCase();
     let current_password = request.body['currentPassword'];
     let new_password = request.body['newPassword'];
     let confirm_password = request.body['confirmPassword'];
     // Validates that email is correct format
-    const email_regex = /^[A-Za-z0-9_.]+@([A-Za-z0-9_.])+([a-zA-Z]{2}|[a-zA-Z]{3})$/
+    const email_regex = /^[A-Za-z0-9_.]+@([A-Za-z0-9_.]*\.)+([a-zA-Z]{2}|[a-zA-Z]{3})$/
     if (!(email_regex.test(current_email))) {
-      registration_update_erros['email'] = `Please enter a valid email address(Ex: jonny@hawaii.edu)`;
+      registration_update_errors.push(`Please enter a valid email address(Ex: jonny@hawaii.edu)`);
     } else if (current_email.length == 0) {
       // Validates that there is a current email inputted
-      registration_update_erros['email'] = `Please enter an current email address`
+      registration_update_errors.push(`Please enter an current email address`);
     }
     // Check if the re-entered update email address matches
     if (new_password != confirm_password) {
-      registration_update_erros['confirmPassword'] = `password does not match`;
+      registration_update_errors.push(`password does not match`); 
     }
 
     if(users_reg_data[current_email] === 'undefined') {
-      registration_update_erros['email'] = `Please enter your registered email address`;
+      registration_update_errors.push(`Please enter your registered email address`);
     } else {
       // Validates that password is at least 10 characters
       if (current_password.length < 10 && current_password.length >16 ) {
-        registration_update_erros['password'] = `Password must be at least 10 characters and at maximum 16 chacracters`;
+        registration_update_errors.push(`Password must be at least 10 characters and at maximum 16 chacracters`);
         // Validates that there is a password inputted
       } else if (current_password.length == 0) {
-        registration_update_erros['password'] = `Please enter a password`
+        registration_update_errors.push(`Please enter a password`)
       }
       //minimum 10 charcaters, Case sensitive, no space allowed 
-      const password_regex = /^(?=.*[A-Z])(?=.*[!$#%&])[a-zA-Z0-9.?/-]{10,}$/  
+      const password_regex = /^(?=.*[A-Z])(?=.*[!\$#%&])[a-zA-Z0-9.?/-]{10,16}$/
       if (!(password_regex.test(current_password))) {
-        registration_update_erros['password'] = `Please include at least special character, number, upper case and lower case`;
+        registration_update_errors.push(`Please include at least special character, number, upper case and lower case`);
       }
       // Validates that passwords matches user_data.json
       if (users_reg_data[current_email].password != encode(current_password)) {
-        registration_update_erros['password'] = `The password entered is incorrect`
+        registration_update_errors.push(`The password entered is incorrect`)
       }
       // 
       if (new_password != confirm_password) {
-        registration_update_erros['confirm_password'] = `The passwords you entered do not match`
+        registration_update_errors.push(`The passwords you entered do not match`)
       }
       // Validates that new password is different than current password
       if (new_password && confirm_password == current_password) {
-        registration_update_erros['newpassword'] = `Your new password must be different from your old password`
+        registration_update_errors.push(`Your new password must be different from your old password`)
       }
     }
     
     // If there are no errors
-    if (Object.keys(registration_update_erros).length == 0) {
+    if (Object.keys(registration_update_errors).length == 0) {
       users_reg_data[current_email].password = encode(new_password)
       // update data into user_data.json 
       //try is for handle if there is any errors, 
@@ -318,7 +318,7 @@ app.post("/login_user", function (request, response) {
     } else {
       // Request errors
       let errors_obj = { 
-        "errors": JSON.stringify(registration_update_erros)
+        "errors": JSON.stringify(registration_update_errors)
       };
       console.log(qs.stringify(errors_obj));
       response.redirect('registration-update.html?' + qs.stringify(errors_obj) + '&' + qs.stringify(qty_obj));
