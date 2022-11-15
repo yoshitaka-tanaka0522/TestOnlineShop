@@ -151,7 +151,7 @@ app.post("/login_user", function (request, response) {
     const input_email = body['email'].toLowerCase();
     console.log("inputemail" + input_email)
     // Get password entered by customer
-    const input_password = body['password'];body.password
+    const input_password = body['password'];
     // Querying input user and json data
     const {isUserError, errors} = isValidUserInfo(input_email, input_password)
     if(isUserError) {       //when there is error in log in
@@ -275,14 +275,21 @@ app.post("/login_user", function (request, response) {
       registration_update_errors.push(`Please enter your registered email address`);
     } else {
       // Validates that password is at least 10 characters
-      if (current_password.length < 10 && current_password.length >16 ) {
+      if (current_password.length < 10 || current_password.length > 16 ) {
         registration_update_errors.push(`Password must be at least 10 characters and at maximum 16 chacracters`);
         // Validates that there is a password inputted
       } else if (current_password.length == 0) {
         registration_update_errors.push(`Please enter a password`)
       }
+      // Validates that password is at least 10 characters
+      if (new_password.length < 10 || new_password.length > 16 ) {
+        registration_update_errors.push(`Password must be at least 10 characters and at maximum 16 chacracters`);
+        // Validates that there is a password inputted
+      } else if (new_password.length == 0) {
+        registration_update_errors.push(`Please enter a password`)
+      }
       //minimum 10 charcaters, Case sensitive, no space allowed 
-      const password_regex = /^(?=.*[A-Z])(?=.*[!\$#%&])[a-zA-Z0-9.?/-]{10,16}$/
+      const password_regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!#\$%&@;:])/
       if (!(password_regex.test(current_password))) {
         registration_update_errors.push(`Please include at least special character, number, upper case and lower case`);
       }
