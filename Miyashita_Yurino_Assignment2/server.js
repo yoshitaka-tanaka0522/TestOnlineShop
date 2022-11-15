@@ -229,7 +229,7 @@ app.post("/login_user", function (request, response) {
       };
       // store data into user_data.json 
       //try is for handle if there is any errors, 
-      try {  
+      try { 
         fs.writeFileSync(json_file_path, JSON.stringify(users_reg_data));   
         // Add product quantity data
         qty_obj['email'] = input_email;
