@@ -136,7 +136,7 @@ function isValidUserInfo(input_email, input_password) {
     if(!(stored_email=== input_email) || !(stored_password === encrpt_input_password)) {
       isUserError = true;
       // if you identify a problem with which one is wrong, there is a vulnerability problem, so an error is displayed that either one does not match
-      errors.push(`Incorrect password or username`);
+      errors.push(`Incorrect password or email`);
     }
   }
 
@@ -212,11 +212,11 @@ app.post("/login_user", function (request, response) {
     // Validate that the full name inputted consists of A-Z characters exclusively
     const username_regex = /^[A-Za-z, ]+$/      
     if (!(username_regex.test(input_username))) {
-      registration_errors['username'] = `Please enter your first and last name`;
+      registration_errors['fullname'] = `Please enter your first and last name`;
     }
     // maximum 30 character, minimum 2 characters, only alphabet 
     if (input_username < 2 || input_username.length > 30) {
-      registration_errors['username'] = `Please enter a name less than 30 characters`;
+      registration_errors['fullname'] = `Please enter a name less than 30 characters`;
     }
 
     //when there is no error, format info inputted to the json file   
@@ -233,7 +233,7 @@ app.post("/login_user", function (request, response) {
         fs.writeFileSync(json_file_path, JSON.stringify(users_reg_data));   
         // Add product quantity data
         qty_obj['email'] = input_email;
-        qty_obj['username'] = users_reg_data[input_email].name;
+        qty_obj['fullname'] = users_reg_data[input_email].name;
         // If registered send to invoice with product quantity data
         response.redirect('./invoice.html?' + qs.stringify(qty_obj));
       } catch(err) {
@@ -282,9 +282,9 @@ app.post("/login_user", function (request, response) {
         registration_update_erros['password'] = `Please enter a password`
       }
       //minimum 10 charcaters, Case sensitive, no space allowed 
-      const password_regex = /^[a-zA-Z0-9][^ |　]{10,}$/  
+      const password_regex = /^(?=.*[A-Z])(?=.*[!$#%&])[a-zA-Z0-9.?/-]{10,}$/  
       if (!(password_regex.test(current_password))) {
-        registration_update_erros['password'] = `Please correct format password`;
+        registration_update_erros['password'] = `Please include at least special character, number, upper case and lower case`;
       }
       // Validates that passwords matches user_data.json
       if (users_reg_data[current_email].password != encode(current_password)) {
@@ -309,7 +309,7 @@ app.post("/login_user", function (request, response) {
         fs.writeFileSync(json_file_path, JSON.stringify(users_reg_data));   
         // Add product quantity data
         qty_obj['email'] = current_email;
-        qty_obj['username'] = users_reg_data[current_email].name;
+        qty_obj['fullname'] = users_reg_data[current_email].name;
         // If registered send to invoice with product quantity data
         response.redirect('./login.html?' + qs.stringify(qty_obj));
       } catch(err) {

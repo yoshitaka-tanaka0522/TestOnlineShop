@@ -34,7 +34,7 @@
             }
           }
           let fullName = params.get('fullname');
-          document.getElementById("username").textContent = fullName;
+          document.getElementById("fullName").textContent = fullName;
         }
       </script>
 </head>
@@ -61,7 +61,7 @@
                             <script>
                                 document.write(`<p class="message"><a href="/registration-update.html${location.search}"> Edit an account</a></p>`)
                               </script>
-                              <!--display username -->
+                              <!--display fullName -->
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                     <div class="col-sm-6">
                         <div>
                             <span class="text-sm text-grey-m2 align-middle">To:</span>
-                            <span id="username" class="text-600 text-110 text-blue align-middle"></span>
+                            <span id="fullName" class="text-600 text-110 text-blue align-middle"></span>
                             <br>
                             <span class="text-sm text-grey-m2 align-middle">From:</span>
                             <span class="text-600 text-110 text-blue align-middle">Sunday's Book</span>
