@@ -177,7 +177,7 @@ app.post("/login_user", function (request, response) {
     const input_email = request.body['email'].toLowerCase();
     const input_password = request.body['password']
     const input_confirm_password = request.body['confirm_Password']
-    const input_username = request.body['username']
+    const input_fullname = request.body['fullname']
     // If the password value entered by the user exists, do a format check on the email address
     if(input_email) {
       // Validate email address
@@ -210,12 +210,12 @@ app.post("/login_user", function (request, response) {
       registration_errors['confirm_password'] = `Your passwords do not match, please try again`;
     }
     // Validate that the full name inputted consists of A-Z characters exclusively
-    const username_regex = /^[A-Za-z, ]+$/      
-    if (!(username_regex.test(input_username))) {
+    const fullname_regex = /^[A-Za-z, ]+$/      
+    if (!(fullname_regex.test(input_fullname))) {
       registration_errors['fullname'] = `Please enter your first and last name`;
     }
     // maximum 30 character, minimum 2 characters, only alphabet 
-    if (input_username < 2 || input_username.length > 30) {
+    if (input_fullname < 2 || input_fullname.length > 30) {
       registration_errors['fullname'] = `Please enter a name less than 30 characters`;
     }
 
@@ -223,7 +223,7 @@ app.post("/login_user", function (request, response) {
     if(Object.keys(registration_errors).length === 0) {
       const encrypt_input_password = encode(input_password)
       users_reg_data[input_email] = {
-        name: input_username,
+        name: input_fullname,
         password: encrypt_input_password,
         email: input_email
       };
