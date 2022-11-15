@@ -20,7 +20,17 @@
             quantity_str += quantity[elem] + '\n';
         }
       }
-      let fullName = params.get('fullname');
+
+      if (params.has('errors')) {
+        let errors = JSON.parse(params.get('errors'));
+        let err_str = '';
+        for (err in errors) {
+          err_str += errors[err] + '\n';
+        }
+        alert(err_str);
+      }
+
+      let fullName = params.get('username');
       let email = params.get('email');
       document.getElementById("username").value = fullName;
       document.getElementById("currenteEmail").value = email;
@@ -38,7 +48,7 @@
       <input type="password" placeholder="current password" name="currentPassword" required />
       <input type="password" placeholder="new password" name="newPassword" required/>
       <input type="password" placeholder="confirm password" name="confirmPassword" required/>
-      <button> <a href="invoice.html">Update</a></button>
+      <button>Update</button>
       <!--go back to log in page  or go to invoice -->
     </form>
 

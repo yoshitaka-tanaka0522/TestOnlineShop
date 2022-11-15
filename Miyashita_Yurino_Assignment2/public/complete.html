@@ -1,41 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Log in</title>
-  <!--load cascading style sheet-->
-  <link rel="stylesheet" href="./css/login-style.css">
-  <script>
-    // taken from Example Assignment 1
-    let params = (new URL(document.location)).searchParams;
-    window.onload = function () {
-      if (params.has('errors')) {
-        let errors = JSON.parse(params.get('errors'));
-        let err_str = '';
-        for (err in errors) {
-          err_str += errors[err] + '\n';
-        }
-        alert(err_str);
-      }
-    }
-  </script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
 <body>
-<div class="login-page">
-  <div class="form">
-    <form class="login-form" action="login_user" method="POST">
-      <input id="#" type="text" id="#" placeholder="email" required name="email"/>
-      <input id="#" type="password" id="#" placeholder="password" required name="password"/>
-      <button>login</button>
-      <script>
-        document.write(`<p class="message">Not registered? <a href="/registration.html${location.search}"> Create an account</a></p>`)
+    <style>
+        html{
+            height: 100%;
+            margin: 0%;
+        }
+        h1  {
+            font-size: 50px;
+            font-family: sans-serif;
+            color: blue;
+            text-align: center;
+        }
+        h2 {
+            font-size: 25px;
+            color: blue;
+            font-family: sans-serif;
+        }
+        .center{
+      text-align: center;
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: blue;
+    }
+        body{
+            width: 700px;
+            text-align: center;
+        }
+    </style>
+    <div class="center"> 
+   <h1>Thank you for your order!</h1>
+   <h2>Items will take 5 bussiness day for shipping</h2>
+
+
+        
+    <script>
+        document.write(`<center><a href="index.html${location.search}"><button>Return to Home</button></center></a>`)
       </script>
-    </form>
-
-  </div>
-
-</div>
+      </div>
 </body>
 </html>

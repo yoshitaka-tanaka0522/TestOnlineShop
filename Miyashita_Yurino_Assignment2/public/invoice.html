@@ -3,7 +3,7 @@
     copied both html and css into  invoice.html   and  invoice-style.css   -->
 
 <!--loading product data -->
-    <script src="../products.json"></script>
+<script src="../products.json"></script>
 
 <!-- loading cascading style sheet-->
     <link rel="stylesheet" href="./css/invoice-style.css">
@@ -58,7 +58,10 @@
                     <div class="col-12">
                         <div class="text-center text-150">
                             <span class="text-default-d3">Invoice: Sunday's Book</span><br>
-                            <span id="username" class="text-default-d3"></span>
+                            <script>
+                                document.write(`<p class="message"><a href="/registration-update.html${location.search}"> Edit an account</a></p>`)
+                              </script>
+                              <!--display username -->
                         </div>
                     </div>
                 </div>
@@ -69,6 +72,9 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div>
+                            <span class="text-sm text-grey-m2 align-middle">To:</span>
+                            <span id="username" class="text-600 text-110 text-blue align-middle"></span>
+                            <br>
                             <span class="text-sm text-grey-m2 align-middle">From:</span>
                             <span class="text-600 text-110 text-blue align-middle">Sunday's Book</span>
                         </div>
@@ -107,28 +113,28 @@
                         </script>
 
 
-                        <script> 
-                        let subtotal = 0;
-                        for (i = 0; i < products.length; i++) {
-                            let extended_price = (products[i].price * quantities[i]) //calculate extended price = quantity entered times product price 
-                            subtotal = subtotal + extended_price;    //calculate subtotal 
-                            if (quantities[i] != 0) {      //i is not qual to 0 
-                                document.write(`
-                                <tbody class="text-95 text-secondary-d3">
-                                <tr></tr>
-                            <tr>
-                                <td>${[i+1]}</td>
-                                <td>${products[i]['name']}</td>
-                                <td>${quantities[i]}</td>
-                                <td class="text-95">$${products[i]['price'].toFixed(2)}</td>
-                                <td class="text-secondary-d2">$${(products[i]['price'] * quantities[i]).toFixed(2)}</td>
-                            </tr> 
-                            </tbody>
-                           `);
+<script> 
+    var subtotal = 0;
+    for (i = 0; i < products.length; i++) {
+        var extended_price = (products[i].price * quantities[i]) //calculate extended price = quantity entered times product price 
+        subtotal = subtotal + extended_price;    //calculate subtotal 
+        if (quantities[i] != 0) {      //i is not qual to 0 
+            document.write(`
+            <tbody class="text-95 text-secondary-d3">
+            <tr></tr>
+            <tr>
+            <td>${[i+1]}</td>
+            <td><img src="${products[i].image}" style="width:5%" alt="Image">${products[i]['name']}</td>
+            <td>${quantities[i]}</td>
+            <td class="text-95">$${products[i]['price'].toFixed(2)}</td>
+            <td class="text-secondary-d2">$${(products[i]['price'] * quantities[i]).toFixed(2)}</td>
+        </tr> 
+        </tbody>
+       `);
 
-                             };
-                        }    
-                        </script>
+         };
+    }    
+    </script>
 
                     </table>
                     </div>
@@ -204,7 +210,9 @@
     </div>
 </div>
 
-    <center><table class = "policy">               
+    <center><table class = "policy"> 
+       <button><a href="complete.html">Submit</a></button>
+       
         <tr>
             <td colspan="4"> <strong>
                 <br> <!-- explains Sunday Bookstore policy -->
@@ -221,8 +229,7 @@
     </table> 
 </center>
 </style>
-<script>
-    document.write(`<p class="message"><a href="/registration-update.html${location.search}"> Edit an account</a></p>`)
-  </script>
+
+   <p></p>
 </body>
 </html>

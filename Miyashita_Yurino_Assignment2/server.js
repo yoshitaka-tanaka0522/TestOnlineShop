@@ -159,15 +159,14 @@ app.post("/login_user", function (request, response) {
         "errors": JSON.stringify(errors)
       };
       console.log(qs.stringify(errors_obj));
-      response.redirect('./login.html?' + qs.stringify(errors_obj)); //redirect to login.html and display errors       
+      response.redirect('./login.html?' + qs.stringify(errors_obj) + '&' + qs.stringify(qty_obj)); //redirect to login.html and display errors       
     } else {
       // If there is no error, redirect to invoice
       //the password matches, use the object to pass the email address and full name to the next screen.
       qty_obj['email'] = input_email;
       qty_obj['fullname'] = users_reg_data[input_email].name;
       // Store quantity data
-      let params = new URLSearchParams(qty_obj);
-      response.redirect('./invoice.html?' + params.toString());    //send quantity entred as string to invoice.html
+      response.redirect('./invoice.html?' + qs.stringify(qty_obj));    //send quantity entred as string to invoice.html
       return;
     }
   });
@@ -183,7 +182,7 @@ app.post("/login_user", function (request, response) {
     if(input_email) {
       // Validate email address
       //case insensive 
-      const email_regex = /^[a-zA-Z0-9\_\.]+@([a-zA-Z0-9]*\.)+[a-zA-Z]{3}$/
+      const email_regex = /^[A-Za-z0-9_.]+@([A-Za-z0-9_.])+([a-zA-Z]{2}|[a-zA-Z]{3})$/
       if (!(email_regex.test(input_email))) {
         registration_errors['email'] = `Please enter a valid email address(Ex: jonny@hawaii.edu)`;
       }
@@ -194,7 +193,7 @@ app.post("/login_user", function (request, response) {
     }
 
     // Validates that password is at least 10 characters
-    if (input_password.length < 10 && input_password.length >16 ) {
+    if (input_password.length < 10 || input_password.length > 16 ) {
       registration_errors['password'] = `Password must be at least 10 characters and at maximum 16 chacracters`;
     }
     // Validates that there is a password inputted
@@ -235,17 +234,19 @@ app.post("/login_user", function (request, response) {
         // Add product quantity data
         qty_obj['email'] = input_email;
         qty_obj['username'] = users_reg_data[input_email].name;
-        let params = new URLSearchParams(qty_obj)
         // If registered send to invoice with product quantity data
-        response.redirect('./invoice.html?' + params.toString());
+        response.redirect('./invoice.html?' + qs.stringify(qty_obj));
       } catch(err) {
         console.log(err.message);
       }
     } else {
       // If errors exist, redirect to registration page with errors
-      request.body['registration_errors'] = JSON.stringify(registration_errors);
-      let params = new URLSearchParams(request.body);
-      response.redirect("./registration.html?" + qs.stringify(params));
+      let errors_obj = { 
+        "errors": JSON.stringify(registration_errors)
+      };
+      // Store quantity data
+      console.log(qs.stringify(errors_obj));
+      response.redirect('./registration.html?' + qs.stringify(errors_obj) + '&' + qs.stringify(qty_obj));
     }
   });
 
@@ -258,7 +259,7 @@ app.post("/login_user", function (request, response) {
     let new_password = request.body['newPassword'];
     let confirm_password = request.body['confirmPassword'];
     // Validates that email is correct format
-    const email_regex = /^[a-zA-Z0-9\_\.]+@([a-zA-Z0-9]*\.)+[a-zA-Z]{3}$/
+    const email_regex = /^[A-Za-z0-9_.]+@([A-Za-z0-9_.])+([a-zA-Z]{2}|[a-zA-Z]{3})$/
     if (!(email_regex.test(current_email))) {
       registration_update_erros['email'] = `Please enter a valid email address(Ex: jonny@hawaii.edu)`;
     } else if (current_email.length == 0) {
@@ -309,18 +310,18 @@ app.post("/login_user", function (request, response) {
         // Add product quantity data
         qty_obj['email'] = current_email;
         qty_obj['username'] = users_reg_data[current_email].name;
-        let params = new URLSearchParams(qty_obj)
         // If registered send to invoice with product quantity data
-        response.redirect('./login.html?' + params.toString());
+        response.redirect('./login.html?' + qs.stringify(qty_obj));
       } catch(err) {
         console.log(err.message);
       }
     } else {
       // Request errors
-      request.body['registration_update_erros'] = JSON.stringify(registration_update_erros);
-      let params = new URLSearchParams(request.body);
-      // Redirect back to update registration page with errors in string
-      response.redirect('update_registration.html?' + params.toString());
+      let errors_obj = { 
+        "errors": JSON.stringify(registration_update_erros)
+      };
+      console.log(qs.stringify(errors_obj));
+      response.redirect('registration-update.html?' + qs.stringify(errors_obj) + '&' + qs.stringify(qty_obj));
     }
   })  
 // Start server
