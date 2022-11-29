@@ -62,9 +62,9 @@ app.post("/purchase", function (request, response, next) {
     if (quantities[i] > 0) {
       available_quantity = true;
     }
-    // Check if quantity request is larger than quantity available
+    // if the cell is filled with 0
     if (quantities[i] > products[i].quantity_available) {
-      errors['available_' + i] = `We don 't have ${(quantities[i])} ${products[i].item} ready to ship, order less or check our stock later!`
+      errors['available_' + i] = `Please leave blank where the quantity is 0!`
     }
   }
   // If no quantities selected, push error

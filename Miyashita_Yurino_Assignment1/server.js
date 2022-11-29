@@ -55,6 +55,9 @@ app.post("/purchase", function (request, response, next) {
     if (notAPosInt(quantities[i]) == false) {
       errors['quantity' + i] = `Please submit valid data for ${products[i].name}!` //if quantity enetred is invalid number 
     }
+    if (!(quantities[i] === '') && Number(quantities[i]) === 0) {
+      errors['quantity' + i] = `If the ${products[i].name} quantity is 0, please enter blank!` //if the cell is filled with 0 
+    }
     if (quantities[i] > 0) { //if quantity entered is greater than, meaning no errors
       available_quantity = true;
     }
