@@ -10,7 +10,7 @@
   <link href="images/" rel="images">
   <script src="./products.json" type="text/javascript"></script>
 </head>
-<body> 
+<body>
     <header>
   <!-- Page Header-->
 	<div class="jumbotron">
@@ -34,6 +34,7 @@
     </header>
     <form action="./purchase" method="POST" onsubmit="return checkError()">
     <script>
+        
         // Print items on page
         //based on store 1 WODs product_display.html 
         for(i = 0; i < products.length; i++) {
@@ -50,7 +51,6 @@
                   <label id = "quantity${i}_label"> Enter Quantity Desired: </label>
                   <div class="input"><input id="quantity${i}" class="quantity" type = "text"  placeholder = "Quantity Available: ${products[i].quantity_available}" name = "quantity" onkeyup="checkQuantityTextbox(this);"></div>
                 </div>
-            
               </div>
             </div>
             </center>
@@ -84,14 +84,14 @@
           
         // taken from Example Assignment 1
         let params = (new URL(document.location)).searchParams;
-        window.onload = function () {    
+        window.onload = function () {
           if (params.has('errors')) {
             var errors = JSON.parse(params.get('errors'));
             let err_str = '';
             for (err in errors) {
               err_str += errors[err] + '\n';
             }
-            alert(err_str);
+            setTimeout(alert(err_str),100);
 
             // Keep the quantity entered by the user fixed
             if (params.has('quantity')) {
