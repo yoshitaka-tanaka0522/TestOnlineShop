@@ -17,7 +17,7 @@
         <div class="container text-center">
         <hr>
           <h1><center>Sunday Bookstore</center></h1>   
-        <hr>   
+        <hr>
           <p><strong><center>Welcome to Sunday's Bookstore. Currently, we have 6 books on sell</center></strong></p>
         </div>
       </div>
@@ -59,12 +59,15 @@
 
         // Determines valid quantity (If "q" is a negative interger)
         function isNonNegInt(q, return_errors = false) {
-          errors = []; // assume no errors at first
+          var errors = []; // assume no errors at first
           if (q == '') q = 0; // handle blank inputs as if they are 0
-          if (Number(q) != q) errors.push('<b><font color="red">Not a number!</font></b>'); // Check if string is a number value
-          if (q < 0) errors.push('<b><font color="red">Negative value!</font></b>'); // Check if it is non-negative
-          if (parseInt(q) != q) errors.push('<b><font color="red">Not an integer!</font></b>'); // Check that it is an integer
-          return return_errors ? errors : (errors.length == 0);  
+          if (Number(q) != q) {
+            errors.push('<b><font color="red">Not a number!</font></b>'); // Check if string is a number value
+          } else {
+            if (q < 0) errors.push('<b><font color="red">Negative value!</font></b>'); // Check if it is non-negative
+            if (parseInt(q) != q) errors.push('<b><font color="red">Not an integer!</font></b>'); // Check that it is an integer
+          }
+          return return_errors ? errors : (errors.length == 0);
         };
         
         // Determines input in textbox
@@ -97,7 +100,7 @@
                 quantity.forEach((element, i) => {
                   document.getElementById(`quantity${i}`).value = quantity[i];
                 });
-            }         
+            }
           }   
        }
 
