@@ -91,6 +91,7 @@
             for (err in errors) {
               err_str += errors[err] + '\n';
             }
+            // Wait 0.1 seconds and display an alert
             setTimeout(alert(err_str),100);
 
             // Keep the quantity entered by the user fixed
@@ -104,7 +105,9 @@
           }   
        }
 
+       // Processing when sending
         function checkError() {
+          // Get all elements with the class name of quantity
           var quantity = document.getElementsByClassName('quantity');
           var isErrorFlag = false;
           for(let i =0; i < quantity.length; i++) {
