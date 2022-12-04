@@ -373,11 +373,14 @@ if (Object.keys(registration_update_errors).length == 0) {
 })
 
 app.get("/add_to_cart", function (request, response) {
-  var products_key = request.query['products_key']; // get the product key sent from the form post
-  // var products_key = 'Mystery';
-  // var quantities = ['1','5','2','6'].map(Number);
-  var quantities = request.query['quantities'].map(Number); // Get quantities from the form post and convert strings from form post to numbers
+  // var products_key = request.query['products_key']; // get the product key sent from the form post
+  // console.log(`products_key--${products_key}`);
+  var products_key = 'Mystery';
+  let aaa = ['1','5','2','6']
+  var quantities = aaa.map(Number);
   request.session.cart[products_key] = quantities; // store the quantities array in the session cart object with the same products_key. 
+  // var quantities = request.query['quantities'].map(Number); // Get quantities from the form post and convert strings from form post to numbers
+  // console.log(`quantities--${quantities}`);
   response.redirect('./shoppingcart.html');
 });
 

@@ -126,7 +126,7 @@
 
 <!--product section starts-->
 <form action="/add_to_cart" method="GET" onsubmit="return checkError()">
-
+<div class="wrapp">
     <script>
         for(var i = 0; i < 6; i++) {
             document.write(`
@@ -154,7 +154,7 @@
                 <label id = "quantity${i}_label"> Enter Quantity Desired: </label>
 
                 <div class="input">
-                <input id="quantity${i}" type = "text" name= quantities[${i}] placeholder = "Quantity Available: ${products.Mystery[i].quantity_available}" name = "quantity" onkeyup="checkQuantityTextbox(this, 'Mystery');"></div>
+                <input id="quantity${i}" type = "text" name= key[${i}] placeholder = "Quantity Available: ${products.Mystery[i].quantity_available}" name = "quantity" onkeyup="checkQuantityTextbox(this, 'Mystery');"></div>
                 <input type="hidden" name="products_key" value="Mystery">
             </div>
         </div>
@@ -164,6 +164,7 @@
 `);
 }
 </script>
+</div>
 <!--products section ends-->
 </body>
 <footer><!--submit button and submit the quantity entered value"purchase" is detremined in sever.js-->
