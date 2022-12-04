@@ -8,16 +8,54 @@
   <title>Sunday Bookstore</title>
   <link href="./css/products-style.css" type="text/css" rel="stylesheet">
   <link href="images/" rel="images">
-  <script src="./products.json" type="text/javascript"></script>
+  <script src="./products.json" type="text/javascript">
+  </script>
+  <script>
+    //
+    // Determines valid quantity (If "q" is a negative interger)
+    function isNonNegInt(q, return_errors = false) {
+      errors = []; // assume no errors at first
+      if (q == '') q = 0; // handle blank inputs as if they are 0
+      if (Number(q) != q) errors.push('<b><font color="red">Not a number!</font></b>'); // Check if string is a number value
+      if (q < 0) errors.push('<b><font color="red">Negative value!</font></b>'); // Check if it is non-negative
+      if (parseInt(q) != q) errors.push('<b><font color="red">Not an integer!</font></b>'); // Check that it is an integer
+      return return_errors ? errors : (errors.length == 0);  
+    };
+    
+    // Determines input in textbox
+    function checkQuantityTextbox(qtyTextbox) {   
+      console.log(qtyTextbox)
+      errs = isNonNegInt(qtyTextbox.value, true);
+      if (errs.length == 0) errs = ['Want to purchase: '];  // when entered valid quantity 
+      if (qtyTextbox.value.trim() == '') errs = ['Type desired quantity: '];  //when there is no entry in taxtbox 
+      const productsNumber = Number(qtyTextbox.id.replace('quantity', ''));    //replace messages with "quantity" 
+      if(products[productsNumber].quantity_available < Number(qtyTextbox.value)) errs = ['<b><font color="red">no stock!</font></b>'];
+      console.log(errs.join('<font color="red">, </font>'))  //when we don't have inventory of quantity entered, display error message in red 
+      document.getElementById(qtyTextbox.id + '_label').innerHTML = errs.join('<font color="red">, </font>');
+    };
+      
+    // taken from Example Assignment 1
+    let params = (new URL(document.location)).searchParams;
+    window.onload = function () {    
+      if (params.has('errors')) {
+        var errors = JSON.parse(params.get('errors'));
+        let err_str = '';
+        for (err in errors) {
+          err_str += errors[err] + '\n';
+        }
+        alert(err_str);
+      }
+    }
+  </script>    
 </head>
-<body>
+<body> 
     <header>
   <!-- Page Header-->
 	<div class="jumbotron">
         <div class="container text-center">
         <hr>
           <h1><center>Sunday Bookstore</center></h1>   
-        <hr>
+        <hr>   
           <p><strong><center>Welcome to Sunday's Bookstore. Currently, we have 6 books on sell</center></strong></p>
         </div>
       </div>
@@ -32,9 +70,8 @@
         </div>
       </nav>
     </header>
-    <form action="./purchase" method="POST" onsubmit="return checkError()">
+    <form action="./purchase" method="POST">
     <script>
-        
         // Print items on page
         //based on store 1 WODs product_display.html 
         for(i = 0; i < products.length; i++) {
@@ -49,91 +86,13 @@
               
                 <div class="card-listText">
                   <label id = "quantity${i}_label"> Enter Quantity Desired: </label>
-                  <div class="input"><input id="quantity${i}" class="quantity" type = "text"  placeholder = "Quantity Available: ${products[i].quantity_available}" name = "quantity" onkeyup="checkQuantityTextbox(this);"></div>
+                  <div class="input"><input id="quantity${i}" type = "text"  placeholder = "Quantity Available: ${products[i].quantity_available}" name = "quantity" onkeyup="checkQuantityTextbox(this);"></div>
                 </div>
+            
               </div>
             </div>
             </center>
             `);
-        }
-
-        // Determines valid quantity (If "q" is a negative interger)
-        function isNonNegInt(q, return_errors = false) {
-          var errors = []; // assume no errors at first
-          if (q == '') q = 0; // handle blank inputs as if they are 0
-          if (Number(q) != q) {
-            errors.push('<b><font color="red">Not a number!</font></b>'); // Check if string is a number value
-          } else {
-            if (q < 0) errors.push('<b><font color="red">Negative value!</font></b>'); // Check if it is non-negative
-            if (parseInt(q) != q) errors.push('<b><font color="red">Not an integer!</font></b>'); // Check that it is an integer
-          }
-          return return_errors ? errors : (errors.length == 0);
-        };
-        
-        // Determines input in textbox
-        function checkQuantityTextbox(qtyTextbox) {   
-          console.log(qtyTextbox)
-          errs = isNonNegInt(qtyTextbox.value, true);
-          if (errs.length == 0) errs = ['Want to purchase: '];  // when entered valid quantity 
-          if (qtyTextbox.value.trim() == '') errs = ['Type desired quantity: '];  //when there is no entry in taxtbox 
-          const productsNumber = Number(qtyTextbox.id.replace('quantity', ''));    //replace messages with "quantity" 
-          if(products[productsNumber].quantity_available < Number(qtyTextbox.value)) errs = ['<b><font color="red">no stock!</font></b>'];
-          console.log(errs.join('<font color="red">, </font>'))  //when we don't have inventory of quantity entered, display error message in red 
-          document.getElementById(qtyTextbox.id + '_label').innerHTML = errs.join('<font color="red">, </font>');
-        };
-          
-        // taken from Example Assignment 1
-        let params = (new URL(document.location)).searchParams;
-        window.onload = function () {
-          if (params.has('errors')) {
-            var errors = JSON.parse(params.get('errors'));
-            let err_str = '';
-            for (err in errors) {
-              err_str += errors[err] + '\n';
-            }
-            // Wait 0.1 seconds and display an alert
-            setTimeout(alert(err_str),100);
-
-            // Keep the quantity entered by the user fixed
-            if (params.has('quantity')) {
-                var quantity = JSON.parse(params.get('quantity'));
-                var quantity_str = '';
-                quantity.forEach((element, i) => {
-                  document.getElementById(`quantity${i}`).value = quantity[i];
-                });
-            }
-          }   
-       }
-
-       // Processing when sending
-        function checkError() {
-          // Get all elements with the class name of quantity
-          var quantity = document.getElementsByClassName('quantity');
-          var isErrorFlag = false;
-          for(let i =0; i < quantity.length; i++) {
-            let intNum = parseInt(quantity[i].value);
-            if(Number(quantity[i].value) != quantity[i].value) {
-              isErrorFlag = true;
-            }
-            if (quantity[i].value < 0) {
-              isErrorFlag = true
-            }
-            if (!(quantity[i].value === '') && parseInt(quantity[i].value) != quantity[i].value) {
-              isErrorFlag = true
-            }
-            if (!(quantity[i].value === '') && Number(quantity[i].value) === 0) { //if the cell is filled with 0
-              isErrorFlag = true
-            }
-            if (quantity[i].value > products[i].quantity_available) { //if quantity entered is greater than quantity available 
-              isErrorFlag = true
-            }
-          }
-          // Remove error information from current url if no error exists
-          if(!isErrorFlag) {
-            var param2 = new URL(document.location).searchParams;
-            param2.delete('errors');
-            history.replaceState('', '', param2);
-          }
         }
     </script>
 </body>

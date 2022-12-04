@@ -1,5 +1,8 @@
-<!--created by Yurino Miyasshita-->
-<!-- this page for new user to create new account-->
+<!--
+Yurino Miyashita 
+This file is an register page to allow users to create an account with their name, email address and password
+new users information will be stored in user_data.json as a object
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +12,7 @@
   <title>Registration</title>
   <!--load cascading style sheet-->
   <link rel="stylesheet" href="./css/login-style.css">
+
   <script>
     // taken from Example Assignment 1
     let params = (new URL(document.location)).searchParams;
@@ -33,8 +37,7 @@
       <input type="password" placeholder="password" required name="password"/>
       <input type="password" placeholder="comfirm password" required name="confirm_Password"/>
       <center> 
-        <input type="submit" value ="registrate" name="registrate_submit" onlick="">
-      </center>
+        <input type="submit" value ="Register" name="register_submit" onlick=""></center>
       
         <!--go back to log in page  or go to invoice -->
     </form>

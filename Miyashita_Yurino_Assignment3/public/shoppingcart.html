@@ -1,0 +1,111 @@
+<!--Yurino Miyashita -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!--loading cascading style sheet-->
+  <link href="./css/products-style1.css" type="text/css" rel="stylesheet">
+  
+  <!--loading products data-->
+  <script src="./products.json" type="text/javascript"></script>  
+
+  <!--Font awesome link -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <style>
+      
+  </style>
+</head>
+<body>
+    <!--header section starts-->
+  
+    <header>
+        <a href="#" class="logo">Sunday BookStore <span></span></a>
+    
+        <nav class="navbar">
+            <a href="index.html">home</a>
+            <a href="store1.html">Mystery</a>
+            <a href="store2.html">Romance</a>
+            <a href="store3.html">Non-Fiction</a>
+        </nav>
+    
+    <div class="icons">
+    <a href="#" class="fas fa-heart"></a>
+    <a href="#" class="fas fa-user"></a>
+    <a href="#" class="fas fa-shopping-cart"></a>
+    </div>
+    </header> 
+    <!-- header section ends-->
+
+
+    <!--shopping cart section starts-->
+    
+    <div class="shopping">
+        <p>shopping cart</p>
+    </div>
+    <section id="cart-container" class="container my-5">
+        <table width="100%">
+            <thead>
+                <tr>
+                    <td>Remove</td>
+                    <td>Images</td>
+                    <td>Product</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                    <td>Total</td>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td><a href="#"><i class="fas fa-trash-alt"></i></a></td>
+                    <td><img src="./images/TheMaid.png" alt=""></td>
+                    <td><h2>products name</h2></td>
+                    <td><h2>$12.00</h2></td>
+                    <td><input class="w-25 pl-1" type="number" value="0"></td>
+                    <td><h2>$12.00</h2></td>
+                </tr>
+                <tr>
+                    <td><a href="#"><i class="fas fa-trash-alt"></i></a></td>
+                    <td><img src="./images/TheMaid.png" alt=""></td>
+                    <td><h2>products name</h2></td>
+                    <td><h2>$12.00</h2></td>
+                    <td><input class="w-25 pl-1" type="number" value="0"></td>
+                    <td><h2>$12.00</h2></td>
+                </tr>
+                <tr>
+                    <td><a href="#"><i class="fas fa-trash-alt"></i></a></td>
+                    <td><img src="./images/TheMaid.png" alt=""></td>
+                    <td><h2>products name</h2></td>
+                    <td><h2>$12.00</h2></td>
+                    <td><input class="w-25 pl-1" type="number" value="0"></td>
+                    <td><h2>$12.00</h2></td>
+                </tr>
+                <tr>
+                    <td><a href="#"><i class="fas fa-trash-alt"></i></a></td>
+                    <td><img src="./images/TheMaid.png" alt=""></td>
+                    <td><h2>products name</h2></td>
+                    <td><h2>$12.00</h2></td>
+                    <td><input class="w-25 pl-1" type="number" value="0"></td>
+                    <td><h2>$12.00</h2></td>
+                </tr>
+
+            </tbody>
+        </table>
+    </section>
+    <section id="cart-button" class="Subtotal">
+        <div class="total">
+            <div><h5>Cart Total</h5></div>
+            <div><h5>Subtotal</h5>
+            <p>$120</p></div>
+            <div><h5>Total</h5>
+            <p>$222</p></div>
+            <button>proceed to checkout</button>
+        </div>
+
+    </section>
+    <!--shopping cart section ends-->
+</body>
+</html>

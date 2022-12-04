@@ -1,3 +1,9 @@
+<!--
+Yurino Miyashita
+This file is HTML login page allows user to log in with their email and password.
+password is encrypted and see if it matched to stored password from user_data.json 
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +15,7 @@
   <link rel="stylesheet" href="./css/login-style.css">
   <script>
     // taken from Example Assignment 1
+    //display error when page is loaded 
     let params = (new URL(document.location)).searchParams;
     window.onload = function () {
       if (params.has('errors')) {

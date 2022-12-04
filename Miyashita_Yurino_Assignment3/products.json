@@ -1,0 +1,155 @@
+{
+  "Mystery": 
+  [
+    {
+    "name": "And Then There Were None",
+    "author": "Agatha Christie",
+    "price": 7.99,
+    "quantity_available": 15,
+    "image": "./images/AndThenThereWereNone.png",
+    "tag": "Mystery"
+    }, 
+    {
+      "name": "The Adventures of Sherlock homes",
+      "author": "Arthuer Conan Doyle",
+      "price": 11.98,
+      "quantity_available": 15,
+      "image": "./images/TheAdventuresOfSH.png",
+      "tag": "Mystery"
+    }, 
+    {
+      "name": "All Good People Here",
+      "author": "Ashley Flowers",
+      "price": 11.98,
+      "quantity_available": 15,
+      "image": "./images/AllGood.png",
+      "tag": "Mystery"
+    }, 
+    {
+      "name": "The Appeal",
+      "author": "Janice Hallett",
+      "price": 11.98,
+      "quantity_available": 15,
+      "image": "./images/TheAppeal.png",
+      "tag": "Mystery"
+    }, 
+    {
+      "name": "The Maid",
+      "author": "Nota Prose",
+      "price": 11.98,
+      "quantity_available": 15,
+      "image": "./images/TheMaid.png",
+      "tag": "Mystery"
+    }, 
+    {
+      "name": "The Stolen Hours",
+      "author": "Allen Eskens",
+      "price": 11.98,
+      "quantity_available": 15,
+      "image": "./images/TheStolenHours.png",
+      "tag": "Mystery"
+    }
+ ],
+ "Romance": 
+ [
+    {
+      "name": "Crazy Rich Asian",
+      "author": "Kevin Kwan",
+      "price": 9.99,
+      "quantity_available": 9,
+      "image": "./images/CrazyRichAsian.jpg",
+      "description": ""
+    }, 
+    {
+      "name": "It Ends with Us",
+      "author": "Colleen Hoover",
+      "price": 11.98,
+      "quantity_available": 5,
+      "image": "./images/ItEndsWithUs.jpg",
+      "description": ""
+    }, 
+    {
+      "name": "It Starts With Us",
+      "author": "Colleen Hoover",
+      "price": 21.92,
+      "quantity_available": 9,
+      "image": "./images/ItStartsWithUS.png",
+      "description": ""
+    },
+    {
+      "name": "Seven Husbands of Evelyn Hugo",
+      "author": "Taylor Jekkins Reid",
+      "price": 21.92,
+      "quantity_available": 4,
+      "image": "./images/SevenHusband.jpg",
+      "description": ""
+    }, 
+    {
+      "name": "Book Lovers",
+      "author": "Emily Henry",
+      "price": 21.92,
+      "quantity_available": 4,
+      "image": "./images/BookLovers.png",
+      "description": ""
+    }, 
+    {
+      "name": "Beach Read",
+      "author": "Emily Henry",
+      "price": 21.92,
+      "quantity_available": 4,
+      "image": "./images/BeachRead.png",
+      "description": ""
+    }
+  ],
+  "Non-Fiction": 
+  [
+    {
+    "name": "Atomic Habits",
+    "author": "James Clear",
+    "price": 11.98,
+    "quantity_available": 15,
+    "image": "./images/AtomicHabits.jpg",
+    "tag": "Non-fiction"
+  }, 
+  {
+    "name": "Rich Dad Poor Dad",
+    "author": "Robert T Kiyosaki",
+    "price": 7.68,
+    "quantity_available": 23,
+    "image": "./images/RichDadPoorDad.jpg",
+    "description": ""
+  }, 
+  {
+    "name": "The Tipping Points",
+    "author": "Malcolm Gladwell",
+    "price": 9.65,
+    "quantity_available": 31,
+    "image": "./images/TheTippingPoint.png",
+    "description": ""
+  }, 
+  {
+    "name": "Talking to Strangers",
+    "author": "Malcolm Gladwell",
+    "price": 9.65,
+    "quantity_available": 31,
+    "image": "./images/TalkingtoStrangers.jpg",
+    "description": ""
+  },
+  {
+    "name": "Thinking, Fast and Slow",
+    "author": "Daniel Kahneman",
+    "price": 9.65,
+    "quantity_available": 31,
+    "image": "./images/ThinkingFastAndSlow.png",
+    "description": ""
+  }, 
+  {
+    "name": "The 7 Habits of Highly Effective People",
+    "author": "Stephen R Covey",
+    "price": 9.65,
+    "quantity_available": 31,
+    "image": "./images/TheSevenHabits.png",
+    "description": ""
+  }
+ ]
+}

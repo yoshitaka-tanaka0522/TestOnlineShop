@@ -41,15 +41,18 @@ form{
     color: white;
    
 }
+button a{
+    color: white;
+}
  p{
     
     font-family: Georgia, 'Times New Roman', Times, serif;
  }
 .form button:hover,.form button:active{
-    background: #9abbd8;
+    background: #70adeb;
 }
 
-.form a{
+a{
     color: #478fcc;
 }
 .message{
