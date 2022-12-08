@@ -3,6 +3,7 @@
     "express": "^4.18.1",
     "express-session": "^1.17.3",
     "minimist": "^1.2.6",
+    "nodemailer": "^6.8.0",
     "sudo": "^1.0.3"
   }
 }
