@@ -15,13 +15,12 @@
   <!--Font awesome link -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 
-  <script>
-  
-    // Determines valid quantity (If "q" is a negative interger)
-    //output errors based on inputted quantity 
-    function isNonNegInt(q, return_errors = false) {
-             var errors = []; // assume no errors at first
-             if (q == '') q = 0; // handle blank inputs as if they are 0
+<script>
+// Determines valid quantity (If "q" is a negative interger)
+//output errors based on inputted quantity 
+  function isNonNegInt(q, return_errors = false) {
+  var errors = []; // assume no errors at first
+  if (q == '') q = 0; // handle blank inputs as if they are 0
              if (Number(q) != q) {
                errors.push('<b><font color="red">Quantity has to be a number!</font></b>'); // Check if string is a number value
              } else {
@@ -102,7 +101,7 @@
          history.replaceState('', '', param2);
        }
      }
-</script>    
+   </script>
 </head>
 <body>
 <!--header section starts-->
@@ -111,9 +110,9 @@
 
 <nav class="navbar">
   <a href="index.html">home</a>
-  <a href="store1.html">Mystery</a>
-  <a href="store2.html">Romance</a>
-  <a href="store3.html">Non-Fiction</a>
+  <a href="javascript:void(0);" onclick="displayProducts('Romance')">Romance</a>
+  <a href="javascript:void(0);" onclick="displayProducts('Romance')">Romance</a>
+  <a href="javascript:void(0);" onclick="displayProducts('Non-Fiction')">Non-Fiction</a>
 </nav>
 
 <div class="icons">
@@ -121,15 +120,17 @@
   <a href="./login.html" class="fas fa-user"></a>
   <a href="./shoppingcart.html" class="fas fa-shopping-cart"></a>
 </div>
+
 </header>
 <!-- header section ends-->
 
 <!--product section starts-->
-<form action="./purchase" method="POST" onsubmit="return checkError()">
-    <script>
-        for(var i = 0; i < 6; i++) {
-            document.write(`
-    <section class="products" id="products">
+<form action="/add_to_cart" method="GET" onsubmit="return checkError()">
+<div class="wrapp">
+  <script>
+    for(var i = 0; i < 6; i++) {
+        document.write(`
+        <section class="products" id="products">
     <h1 class="heading"> <span></span></h1>
     <div class="box-container">
         
@@ -139,7 +140,8 @@
                 <img src="${products.Romance[i].image}" alt="">
                 <div class="icons">
                     <a href="#" class="fas fa-heart"></a> 
-                    <a href="#" class="cart-btn">add to cart</a>
+                    <a id="addCart${i}" class="addCart" href="./add_to_cart?products_key='Romance'" class="cart-btn" name="${products.Romance[i].name}">add to cart</a>
+                    <input type="submit"  name="submit${i}" value="カートに入れる">
                 </div>
             </div>
             <div class="content">
@@ -147,21 +149,28 @@
 
                 <h4>${products.Romance[i].author}</h4>
 
-                <div class="price">${products.Romance[i].price}</div>
+                <div class="price">$${products.Romance[i].price}</div>
 
-                <label id = "quantity${i}_label"> Enter Quantity Desired: </label>
+                <label id="quantity${i}_label"> Enter Quantity Desired: </label>
 
                 <div class="input">
-                <input id="quantity${i}" type = "text"  placeholder = "Quantity Available: ${products.Romance[i].quantity_available}" name = "quantity" onkeyup="checkQuantityTextbox(this,'Romance');"></div>
-                
+                <input id="quantity${i}" name="quantities[${i}]" type="text" placeholder = "Quantity Available: ${products.Romance[i].quantity_available}" name = "quantity" onkeyup="checkQuantityTextbox(this, 'Romance');"></div>
             </div>
         </div>
     </div>
-</section>
-</form>
-`);
+</section>`);
 }
 </script>
+            <input type="hidden" name="products_key" value="Romance">
+</div>
 <!--products section ends-->
 </body>
+<footer><!--submit button and submit the quantity entered value"purchase" is detremined in sever.js-->
+  <div class="label"></div>
+     <center> 
+         <input type="submit" value ="purchase" name="purchase_submit" onlick=""></center> 
+      </form>
+  </div>
+
+</footer>
 </html>

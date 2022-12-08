@@ -110,9 +110,9 @@
 
 <nav class="navbar">
   <a href="index.html">home</a>
-  <a href="store1.html">Mystery</a>
-  <a href="store2.html">Romance</a>
-  <a href="store3.html">Non-Fiction</a>
+  <a href="./store1.html" onclick="displayProducts('Mystery')">Mystery</a>
+  <a href="./store2.html" onclick="displayProducts('Romance')">Romance</a>
+  <a href="./store3.html" onclick="displayProducts('Non-Fiction')">Non-Fiction</a>
 </nav>
 
 <div class="icons">
@@ -127,10 +127,10 @@
 <!--product section starts-->
 <form action="/add_to_cart" method="GET" onsubmit="return checkError()">
 <div class="wrapp">
-    <script>
-        for(var i = 0; i < 6; i++) {
-            document.write(`
-    <section class="products" id="products">
+  <script>
+    for(var i = 0; i < 6; i++) {
+        document.write(`
+        <section class="products" id="products">
     <h1 class="heading"> <span></span></h1>
     <div class="box-container">
         
@@ -151,19 +151,17 @@
 
                 <div class="price">$${products.Mystery[i].price}</div>
 
-                <label id = "quantity${i}_label"> Enter Quantity Desired: </label>
+                <label id="quantity${i}_label"> Enter Quantity Desired: </label>
 
                 <div class="input">
-                <input id="quantity${i}" type = "text" name= key[${i}] placeholder = "Quantity Available: ${products.Mystery[i].quantity_available}" name = "quantity" onkeyup="checkQuantityTextbox(this, 'Mystery');"></div>
-                <input type="hidden" name="products_key" value="Mystery">
+                <input id="quantity${i}" name="quantities[${i}]" type="text" placeholder = "Quantity Available: ${products.Mystery[i].quantity_available}" name = "quantity" onkeyup="checkQuantityTextbox(this, 'Mystery');"></div>
             </div>
         </div>
     </div>
-</section>
-</form>
-`);
+</section>`);
 }
 </script>
+            <input type="hidden" name="products_key" value="Mystery">
 </div>
 <!--products section ends-->
 </body>

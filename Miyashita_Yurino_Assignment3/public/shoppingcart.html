@@ -17,6 +17,18 @@
   <style>
       
   </style>
+  <script>
+    // This function asks the server for a "service" and converts the response to text. 
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://localhost:8080/get_cart');
+    xhr.send();
+    xhr.onreadystatechange = function() {
+      if(xhr.readyState === 4 && xhr.status === 200) {
+        //データを取得後の処理を書く
+        console.log(JSON.parse(xhr.responseText));
+      }
+    }
+  </script>
 </head>
 <body>
     <!--header section starts-->
@@ -57,41 +69,21 @@
                     <td>Total</td>
                 </tr>
             </thead>
-
             <tbody>
-                <tr>
-                    <td><a href="#"><i class="fas fa-trash-alt"></i></a></td>
-                    <td><img src="./images/TheMaid.png" alt=""></td>
-                    <td><h2>products name</h2></td>
-                    <td><h2>$12.00</h2></td>
-                    <td><input class="w-25 pl-1" type="number" value="0"></td>
-                    <td><h2>$12.00</h2></td>
-                </tr>
-                <tr>
-                    <td><a href="#"><i class="fas fa-trash-alt"></i></a></td>
-                    <td><img src="./images/TheMaid.png" alt=""></td>
-                    <td><h2>products name</h2></td>
-                    <td><h2>$12.00</h2></td>
-                    <td><input class="w-25 pl-1" type="number" value="0"></td>
-                    <td><h2>$12.00</h2></td>
-                </tr>
-                <tr>
-                    <td><a href="#"><i class="fas fa-trash-alt"></i></a></td>
-                    <td><img src="./images/TheMaid.png" alt=""></td>
-                    <td><h2>products name</h2></td>
-                    <td><h2>$12.00</h2></td>
-                    <td><input class="w-25 pl-1" type="number" value="0"></td>
-                    <td><h2>$12.00</h2></td>
-                </tr>
-                <tr>
-                    <td><a href="#"><i class="fas fa-trash-alt"></i></a></td>
-                    <td><img src="./images/TheMaid.png" alt=""></td>
-                    <td><h2>products name</h2></td>
-                    <td><h2>$12.00</h2></td>
-                    <td><input class="w-25 pl-1" type="number" value="0"></td>
-                    <td><h2>$12.00</h2></td>
-                </tr>
-
+                <script>
+                    for(var i = 0; i < 6; i++) {
+                        document.write(`
+                      <tr>
+                        <td><a href="#"><i class="fas fa-trash-alt"></i></a></td>
+                        <td><img src="./images/TheMaid.png" alt=""></td>
+                        <td><h2>products name</h2></td>
+                        <td><h2>$12.00</h2></td>
+                        <td><input class="w-25 pl-1" type="number" value="0"></td>
+                        <td><h2>$12.00</h2></td>
+                      </tr>
+            `);
+            }
+            </script>
             </tbody>
         </table>
     </section>
