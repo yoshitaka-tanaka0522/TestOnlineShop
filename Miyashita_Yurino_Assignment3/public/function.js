@@ -5,6 +5,6 @@
 function nav_bar(this_product_key, product_data){
     for (let products_key in products_data){
         if (products_key ==this_product_key) continue;
-        document.write(`<a href='./store1.html?products_key=${products_key}'>${products_key}</a>&nbsp&nbsp&nbsp;`);
+        document.write(`<a href='./store.html?products_key=${products_key}'>${products_key}</a>&nbsp&nbsp&nbsp;`);
     }
 }

@@ -7,7 +7,8 @@ let app = express();
 
 // Load Body-Parser Package
 let parser = require("body-parser");
-
+var cookieParser = require('cookie-parser');
+app.use(cookieParser('secret'))
 // Load QueryString Package
 const qs = require('querystring');
 let fs = require('fs')
@@ -24,7 +25,6 @@ app.all('*', function (request, response, next) {
   console.log(`Got a ${request.method} to path ${request.path}`);
   // need to initialize an object to store the cart in the session. We do it when there is any request so that we don't have to check it exists
   // anytime it's used
-  
   next();
 });
 
@@ -383,10 +383,11 @@ app.get("/add_to_cart", function (request, response) {
   });// Get quantities from the form post and convert strings from form post to numbers
   request.session.cart[products_key] = quantities; // store the quantities array in the session cart object with the same products_key. 
   console.log(`quantities--${quantities}`);
-  response.redirect('./store1.html');
+  response.redirect(`./store.html?key=${products_key}`);
 });
 
 app.get("/get_cart", async function (request, response) {
+  response.cookie('test', 'aaa', {maxAge:60000, httpOnly:false});
   return response.json(request.session.cart);
 });
 const nodemailer = require('nodemailer');
