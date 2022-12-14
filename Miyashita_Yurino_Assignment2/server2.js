@@ -153,7 +153,7 @@ app.post("/register", function (request, response) {
 
 app.use(express.static(__dirname + '/static'));
 
-let listener = app.listen(8080, () => { console.log('server started listening on port ' + listener.address().port) });
+let listener = app.listen(9000, () => { console.log('server started listening on port ' + listener.address().port) });
 
 // helper functions
 function isNonNegInt(q, return_errors = false) {

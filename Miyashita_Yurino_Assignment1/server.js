@@ -1,4 +1,4 @@
-//created by Yurino Miyashita 
+//created by yurino Miyashita 
 //modified Blake Saari's server.js 
 
 // Load Express Package

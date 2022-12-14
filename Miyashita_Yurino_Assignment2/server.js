@@ -1,5 +1,5 @@
 /*
-Yurino Miyashita
+yurino Miyashita
 This file is a server and serve as server side data validation for log in, registration, 
 edit account and store display page to check inpuut
  */
@@ -362,4 +362,4 @@ if (Object.keys(registration_update_errors).length == 0) {
 })  
 
 // ------------------ Start server ---------------------//
-app.listen(8080, () => console.log(`listening on port 8080`));
+app.listen(8080, () => console.log(`listening on port 8000`));

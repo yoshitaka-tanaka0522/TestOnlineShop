@@ -1,4 +1,4 @@
-<!--Yurino Miyashita -->
+<!--yurino Miyashita -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,13 +34,14 @@
               } else {
                 contentHtml += `
                   <tr>
-                    <td><a href="#"><i class="fas fa-trash-alt"></i></a></td>
+                    <td><a id="${key}-${i}" name="${products[key][i].name}" class="deleteButton" href="shoppingcart.html"><i class="fas fa-trash-alt"></i></a></td>
                     <td><img src="${products[key][i].image}" alt=""></td>
                     <td><h2>${products[key][i].name}</h2></td>
                     <td><h2>$${products[key][i].price}</h2></td>
                     <td><input class="w-25 pl-1" type="number" value="${cart_data[key][i]}"></td>
                     <td><h2>${products[key][i].price * cart_data[key][i]}</h2></td>
                   </tr>
+                  <input type="hidden" name=>
                   `;
                   total += products[key][i].price * cart_data[key][i]
               }
@@ -68,7 +69,7 @@
             };
             displayCartContent();
         }
-        }
+        }        
   </script>
 </head>
 <body>
@@ -85,14 +86,14 @@
         </nav>
     
     <div class="icons">
-    <a href="#" class="fas fa-heart"></a>
-    <a href="#" class="fas fa-user"></a>
-    <a href="#" class="fas fa-shopping-cart"></a>
+      <a href="#" class="fas fa-heart"></a>
+      <a href="./login.html" class="fas fa-user"></a>
+      <a href="./shoppingcart.html" class="fas fa-shopping-cart"></a>
     </div>
     </header> 
     <!-- header section ends-->
 
-
+<form action="/purchase" method="GET">
     <!--shopping cart section starts-->
     
     <div class="shopping">
@@ -117,14 +118,13 @@
     <section id="cart-button" class="Subtotal">
         <div class="total">
             <div><h5>Cart Total</h5></div>
-            <div><h5>Subtotal</h5>
-            <p>$120</p></div>
             <div><h5>Total</h5>
             <p id="total"></p></div>
-            <button>proceed to checkout</button>
+            <button type="submit">proceed to checkout</button>
         </div>
 
     </section>
     <!--shopping cart section ends-->
+    </form>
 </body>
 </html>

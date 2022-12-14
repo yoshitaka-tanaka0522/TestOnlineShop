@@ -23,8 +23,7 @@ function displayProducts(key) {
             <img src="${products[key][i].image}" alt="">
             <div class="icons">
                 <a href="#" class="fas fa-heart"></a> 
-                <a id="addCart${i}" class="addCart" href="./add_to_cart?products_key='Mystery'" class="cart-btn" name="${products[key][i].name}">add to cart</a>
-                <input type="submit" name="submit${i}" value="カートに入れる">
+                <input class="cart-btn" type="submit" name="submit${i}" value="add to cart">
             </div>
         </div>
         <div class="content">

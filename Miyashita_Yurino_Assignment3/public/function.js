@@ -1,4 +1,4 @@
-//Yurino Miyashita
+//yurino Miyashita
 // this function asks the server for a service and convert the response to text 
 
 

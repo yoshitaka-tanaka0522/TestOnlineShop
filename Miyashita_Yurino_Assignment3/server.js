@@ -1,4 +1,4 @@
-//created by Yurino Miyashita 
+//created by yurino Miyashita 
 //modified Blake Saari's server.js 
 
 // Load Express Package
@@ -14,7 +14,20 @@ const qs = require('querystring');
 let fs = require('fs')
 var session = require('express-session');
 app.use(express.urlencoded({ extended: true }));
-app.use(session({secret: "MySecretKey", resave: true, saveUninitialized: true}));
+app.use(
+  session({
+    secret: "MySecretKey",
+    resave: true, 
+    saveUninitialized: true,
+    cookie: {
+      path: '/', // default
+      httpOnly: true, // default
+      maxAge: 10 * 1000, // 30minutes
+    },
+  }));
+
+// session情報を見てカート情報が残っている場合はカート画面に遷移する共通処理
+
 
 // Get Body
 app.use(parser.urlencoded({
@@ -90,43 +103,60 @@ app.get("/products.json", function (request, response, next) {
 });
 
 // Process purchase request (validate quantities, check quantity available)
-app.post("/purchase", function (request, response, next) {
-  console.log(request.body); //getting request from invoice.html body
-  let quantities = request.body['quantity']; //assigning value to quantities as quantity entred in store.html textbox
-  let errors = {};
-  let available_quantity = false;
-  for (i in quantities) {
-    console.log(quantities[i])    
-    if (notAPosInt(quantities[i]) == false) {
-      errors['quantity' + i] = `Please submit valid data for ${products[i].name}!` //if quantity enetred is invalid number 
-    }
-    if (quantities[i] > 0) { //if quantity entered is greater than, meaning no errors
-      available_quantity = true;
-    }
-    if (quantities[i] > products[i].quantity_available) { //if quantity entered is greater than quantity available 
-      errors['quantity' + i] = `We currenly don't have ${(quantities[i])}${products[i].name}. please check our website later!`
-    }
-  }
+// app.post("/purchase", function (request, response, next) {
+//   console.log(request.body); //getting request from invoice.html body
+//   let quantities = request.body['quantity']; //assigning value to quantities as quantity entred in store.html textbox
+//   let errors = {};
+//   let available_quantity = false;
+//   for (i in quantities) {
+//     console.log(quantities[i])    
+//     if (notAPosInt(quantities[i]) == false) {
+//       errors['quantity' + i] = `Please submit valid data for ${products[i].name}!` //if quantity enetred is invalid number 
+//     }
+//     if (quantities[i] > 0) { //if quantity entered is greater than, meaning no errors
+//       available_quantity = true;
+//     }
+//     if (quantities[i] > products[i].quantity_available) { //if quantity entered is greater than quantity available 
+//       errors['quantity' + i] = `We currenly don't have ${(quantities[i])}${products[i].name}. please check our website later!`
+//     }
+//   }
+//   //taking quantity entered to display in invoice and direct to log in page
+//   //changed login.html from invoice.html
+//   let quantity_object = {
+//     "quantity": JSON.stringify(quantities)
+//   }; //creating string by quantity_object
+//   console.log(Object.keys(errors));
+//   if (Object.keys(errors).length == 0) { //no errors, 
+//     for (i in quantities) { //remove purchase quantity from inventory
+//       products[i].quantity_available -= Number(quantities[i]);
+//     }
+//     // Save quantity requested
+//     qty_obj = quantity_object
+//     //sends invoice with quantity with quary string
+//     response.redirect('./login.html?' + qs.stringify(quantity_object)); //inserting value as quary string to invoice.html table 
+//   } else { //with errors, redirect to login.html  
+//     let errors_obj = {
+//       "errors": JSON.stringify(errors)
+//     };
+//     console.log(qs.stringify(quantity_object));
+//     response.redirect('./store.html?' + qs.stringify(quantity_object) + '&' + qs.stringify(errors_obj)); //redirect to store.html and display errors 
+//   }
+// });
+
+// Process purchase request (validate quantities, check quantity available)
+app.get("/purchase", function (request, response, next) {
+  var shopping_cart = request.session.cart;
   //taking quantity entered to display in invoice and direct to log in page
   //changed login.html from invoice.html
   let quantity_object = {
-    "quantity": JSON.stringify(quantities)
-  }; //creating string by quantity_object
-  console.log(Object.keys(errors));
-  if (Object.keys(errors).length == 0) { //no errors, 
-    for (i in quantities) { //remove purchase quantity from inventory
-      products[i].quantity_available -= Number(quantities[i]);
-    }
-    // Save quantity requested
-    qty_obj = quantity_object
-    //sends invoice with quantity with quary string
-    response.redirect('./login.html?' + qs.stringify(quantity_object)); //inserting value as quary string to invoice.html table 
-  } else { //with errors, redirect to login.html  
-    let errors_obj = {
-      "errors": JSON.stringify(errors)
-    };
+    "quantity": JSON.stringify(shopping_cart)
+  };
+  if(!request.session.user) {
+    // if the user is not logged in
+    response.redirect('./login.html?' + qs.stringify(qty_obj));
+  } else {
     console.log(qs.stringify(quantity_object));
-    response.redirect('./store.html?' + qs.stringify(quantity_object) + '&' + qs.stringify(errors_obj)); //redirect to store.html and display errors 
+    response.redirect('./invoice.html?' + qs.stringify(quantity_object)); //redirect to store.html and display errors 
   }
 });
 
@@ -191,14 +221,19 @@ app.post("/login_user", function (request, response) {
       console.log(qs.stringify(errors_obj));
       response.redirect('./login.html?' + qs.stringify(errors_obj) + '&' + qs.stringify(qty_obj)); //redirect to login.html and display errors       
     } else {
+      // Make user logged in
+      request.session.user = {
+        loggedIn: true,
+        email: input_email
+      };
       // If there is no error, redirect to invoice
       //the password matches, use the object to pass the email address and full name to the next screen.
       qty_obj['email'] = input_email;
       qty_obj['fullname'] = users_reg_data[input_email].name;
-      // Store quantity data
-      response.redirect('./invoice.html?' + qs.stringify(qty_obj));    //send quantity entred as string to invoice.html
+        // Store quantity data
+        response.redirect('./store.html?key=Mystery&' + qs.stringify(qty_obj));    //send quantity entred as string to invoice.html
+      }
       return;
-    }
   });
 
 // ------------------------ resgistration.html --------------------------//
@@ -268,8 +303,14 @@ app.post("/login_user", function (request, response) {
         // Add product quantity data
         qty_obj['email'] = input_email;
         qty_obj['fullname'] = users_reg_data[input_email].name;
+
+        // Make user logged in
+        request.session.user = {
+          loggedIn: true,
+          email: input_email
+        };
         // If registered sucsessfully, send to invoice with product quantity data
-        response.redirect('./invoice.html?' + qs.stringify(qty_obj));
+        response.redirect('./store.html??key=Mystery' + qs.stringify(qty_obj));
       } catch(err) {
         console.log(err.message);
       }
@@ -357,8 +398,14 @@ if (Object.keys(registration_update_errors).length == 0) {
     // Add product quantity data
     qty_obj['email'] = current_email;
     qty_obj['fullname'] = users_reg_data[current_email].name;
+
+    // Make user logged in
+    request.session.user = {
+      loggedIn: true,
+      email: input_email
+    };
     // If registered send to invoice with product quantity data
-    response.redirect('./login.html?' + qs.stringify(qty_obj));
+    response.redirect('./store.html?key=Mystery' + qs.stringify(qty_obj));
   } catch(err) {
     console.log(err.message);
     }
@@ -386,54 +433,80 @@ app.get("/add_to_cart", function (request, response) {
   response.redirect(`./store.html?key=${products_key}`);
 });
 
+// Get and return cart information from session
 app.get("/get_cart", async function (request, response) {
-  response.cookie('test', 'aaa', {maxAge:60000, httpOnly:false});
   return response.json(request.session.cart);
 });
+
+// Get and return cart information from session
+app.get("/delete_cart", async function (request, response) {
+  var products_key = request.query['products_key'];
+  var index = request.query['index'];
+  request.session.cart[products_key][index] = 0;
+  response.redirect(`./shoppingcart.html`);
+});
+
+app.get("/get_user", async function (request, response) {
+  console.log(`request.session.user---${request.session.user}`);
+  return response.json(request.session.user);
+});
+
+// Load nodemailer package
 const nodemailer = require('nodemailer');
 app.get("/checkout", function (request, response) {
-  console.log("checkoutにきた")
-  // Generate HTML invoice string
-    var invoice_str = `Thank you for your order!<table border><th>Quantity</th><th>Item</th>`;
-    var shopping_cart = request.session.cart;
-    for(product_key in shopping_cart) {
-      for(i=0; i<products_data[product_key].length; i++) {
-          if(typeof shopping_cart[product_key] == 'undefined') continue;
-          qty = shopping_cart[product_key][i];
-          if(qty > 0) {
-            invoice_str += `<tr><td>${qty}</td><td>${shopping_cart[product_key][i].name}</td><tr>`;
-          }
-      }
+  // if the user is not logged in
+  if(!request.session.user) {
+    // if the user is not logged in
+    response.redirect('./login.html?' + qs.stringify(qty_obj));        
+  } else {
+    // If the user is already logged in
+    // Generate HTML invoice string
+      var invoice_str = `Thank you for your order!<table border><th>Quantity</th><th>Item</th>`;
+      var shopping_cart = request.session.cart;
+      for(product_key in shopping_cart) {
+        for(i=0; i< shopping_cart[product_key].length; i++) {
+            if(typeof shopping_cart[product_key] == 'undefined') continue;
+            qty = shopping_cart[product_key][i];
+            if(qty > 0) {
+              invoice_str += `<tr><td>${qty}</td><td>${shopping_cart[product_key][i].name}</td><tr>`;
+            }
+        }
+    }
+    console.log("invoice_str" + invoice_str)
+      invoice_str += '</table>';
+    // Set up mail server. Only will work on UH Network due to security restrictions
+      var transporter = nodemailer.createTransport({
+        host: "mail.hawaii.edu",
+        port: 25,
+        secure: false, // use TLS
+        tls: {
+          // do not fail on invalid certs
+          rejectUnauthorized: false
+        }
+      });
+    
+      var user_email = 'yositana5227@gmail.com';
+      var mailOptions = {
+        from: 'phoney_store@bogus.com',
+        to: user_email,
+        subject: 'Your phoney invoice',
+        html: invoice_str
+      };
+    
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error)
+          invoice_str += '<br>There was an error and your invoice could not be emailed :(';
+        } else {
+          invoice_str += `<br>Your invoice was mailed to ${user_email}`;
+        }
+        response.send(invoice_str);
+        // Delete session information
+        request.session.destroy();
+      });    
+    // Store quantity data
+    response.redirect('./invoice.html?' + qs.stringify(qty_obj));    //send quantity entred as string to invoice.html
   }
-    invoice_str += '</table>';
-  // Set up mail server. Only will work on UH Network due to security restrictions
-    var transporter = nodemailer.createTransport({
-      host: "mail.hawaii.edu",
-      port: 25,
-      secure: false, // use TLS
-      tls: {
-        // do not fail on invalid certs
-        rejectUnauthorized: false
-      }
-    });
-  
-    var user_email = 'yositana5227@gmail.com';
-    var mailOptions = {
-      from: 'phoney_store@bogus.com',
-      to: user_email,
-      subject: 'Your phoney invoice',
-      html: invoice_str
-    };
-  
-    transporter.sendMail(mailOptions, function(error, info){
-      if (error) {
-        console.log(error)
-        invoice_str += '<br>There was an error and your invoice could not be emailed :(';
-      } else {
-        invoice_str += `<br>Your invoice was mailed to ${user_email}`;
-      }
-      response.send(invoice_str);
-    });
   });
 
 // ------------------ Start server ---------------------//
