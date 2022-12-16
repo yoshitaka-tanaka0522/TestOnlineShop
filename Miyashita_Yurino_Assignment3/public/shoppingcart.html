@@ -34,14 +34,13 @@
               } else {
                 contentHtml += `
                   <tr>
-                    <td><a id="${key}-${i}" name="${products[key][i].name}" class="deleteButton" href="shoppingcart.html"><i class="fas fa-trash-alt"></i></a></td>
+                    <td><a class="deleteButton"><i id="${key}-${i}" class="fas fa-trash-alt"></i></a></td>
                     <td><img src="${products[key][i].image}" alt=""></td>
                     <td><h2>${products[key][i].name}</h2></td>
                     <td><h2>$${products[key][i].price}</h2></td>
                     <td><input class="w-25 pl-1" type="number" value="${cart_data[key][i]}"></td>
                     <td><h2>${products[key][i].price * cart_data[key][i]}</h2></td>
                   </tr>
-                  <input type="hidden" name=>
                   `;
                   total += products[key][i].price * cart_data[key][i]
               }
@@ -51,6 +50,25 @@
       }
       document.getElementById("total").textContent = `$${total}`;
       document.getElementById("cartContent").insertAdjacentHTML('beforebegin', contentHtml);
+      var deleteButton = document.getElementsByClassName('deleteButton')
+      for(var i=0; i < deleteButton.length; i++) {
+        deleteButton[i].addEventListener('click', function(e) {
+          var productKey = e.target.id.split('-')[0];
+          var index = e.target.id.split('-')[1]
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', `http://localhost:8080/delete_cart?products_key=${productKey}&index=${index}`);
+          xhr.send();
+          xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4 && xhr.status === 200) {
+              var data = JSON.parse(xhr.responseText); 
+              if(!(Object.keys(data).length === 0)) {
+                alert('ok')
+              };
+              window.href="/shopping.html";
+          }
+          }          
+        })
+      }
     }
 
 
