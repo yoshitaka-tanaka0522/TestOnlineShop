@@ -28,7 +28,7 @@ app.use(
     cookie: {
       path: '/', // default
       httpOnly: true, // settings to prevent access from JavaScript
-      maxAge: 3600000, // Set cookie duration to 60 minutes
+      // maxAge: 3600000, // Set cookie duration to 60 minutes
     },
   }));
 
@@ -498,9 +498,14 @@ app.get("/delete_cart", async function (request, response) {
   // Get the index in the product category information from the url query parameter
   var index = request.query['index'];
   // Delete product information in session information
-  request.session.cart[products_key][index] = 0;
-  // Delete product information in cookie information
-  request.cookies.products[products_key][index] = 0;
+  if(request.session.cart[products_key] === 'undefined' ) {
+  } else {
+    request.session.cart[products_key][index] = 0;
+  }
+  if(request.cookies.products[products_key] === 'undefined' ) {
+  } else {
+    request.session.cart[products_key][index] = 0;
+  }
   // Redirect to cart screen after deleting product
   response.redirect(`./shoppingcart.html`);
 });
