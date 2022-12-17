@@ -1,15 +1,16 @@
-// sessionStrageにkey(閲覧中かどうかのキー)を保存
-// 閲覧中がなければ閲覧中をtrueにする
-// localStorageに毎回ページが変わるごとにページを保存する
-// sessionStrageのキーがないときにlocalStorageにページが保存されていた場合、そこにリダイレクトする
+// Save key (key for browsing or not) in sessionStorage
+// If you are not browsing, set browsing to true
+// Save the page every time the page changes in localStorage
+// If the page was stored in localStorage when there was no sessionStorage key, redirect to it
 const browse = sessionStorage.getItem('browse');
 if(browse === null) {
-  // 最初にページを見たとき
+  // when you first see the page
   sessionStorage.setItem('browse', true);
   const page = localStorage.getItem('page');
-  // 一回離脱して帰ってきたとき
+  // When I left and came back
   if(page !== null) {
     location.replace(page);
   }
 }
+// Save current page
 localStorage.setItem('page', location.href);

@@ -28,7 +28,7 @@ app.use(
     cookie: {
       path: '/', // default
       httpOnly: true, // settings to prevent access from JavaScript
-      maxAge: 180 * 0000, // Set cookie duration to 30 minutes
+      // maxAge: 180 * 0000, // Set cookie duration to 30 minutes
     },
   }));
 

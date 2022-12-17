@@ -1,15 +1,18 @@
+// Get the product category information from the query parameters of the url after loading the DOM
 window.addEventListener('DOMContentLoaded', function() {
   if (params.has('key')) {
     var key = params.get('key');
+    // Pass the obtained key to the displayProducts function
     displayProducts(key)
   } 
 })
 
-
-
+// Display store information on the screen
+// Differentiate information by product key
 function displayProducts(key) {
+  // Initialize the html to insert on the screen
   let html = ''
-  document.getElementById("wrap");
+  var wrap = document.getElementById("wrap");
 
   for(var i = 0; i < 6; i++) {
     html += `
@@ -43,6 +46,6 @@ function displayProducts(key) {
 </section>
 `;
 }
-html += `<input type="hidden" name="products_key" value="${key}">`;
-wrap.innerHTML = html;
+  html += `<input type="hidden" name="products_key" value="${key}">`;
+  wrap.innerHTML = html;
 }
