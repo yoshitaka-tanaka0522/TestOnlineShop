@@ -34,17 +34,24 @@ app.use(
 
 // when logged in user is inactive, automatically log them off.
 app.use((request, response, next)=> {
-  // If the session expires
-  if(!request.session.user) {
-    // set the login state to false
-    request.session.user = {
-      loggedIn: false,
-    }
-    // redirect to index.html
-    response.redirect('/index.html');
+  if(!request.session.page === 'complete.html') {
+    // delete session information
+    request.session.destroy();
+    // Do not return to home when displaying the completion page
+    next();
   } else {
-    // when session is not expired
-    next()
+    // If the session expires
+    if(!request.session.user) {
+      // set the login state to false
+      request.session.user = {
+        loggedIn: false,
+      }
+      // redirect to index.html
+      response.redirect('/index.html');
+    } else {
+      // when session is not expired
+      next()
+    }
   }
 })
 
@@ -567,10 +574,9 @@ app.get("/checkout", function (request, response) {
       // send email document
       response.send(invoice_str);
     });
-    // delete session information
-    request.session.destroy();
     response.clearCookie("user_email"); //delete cookie information useremail
     response.clearCookie("products"); //delete cookie information products
+    request.session.page = 'complete.html'
     // Redirect to completion screen
     response.redirect('./complete.html?')
   });
