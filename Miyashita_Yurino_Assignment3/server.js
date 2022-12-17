@@ -22,13 +22,13 @@ app.use(
     cookie: {
       path: '/', // default
       httpOnly: true, // default
-      maxAge: 10 * 2000, //
+      // maxAge: 10 * 2000, //
     },
   }));
 
-// session情報を見てカート情報が残っている場合はカート画面に遷移する共通処理
+// when there are items in cart, session will take user to the shopping cart
 
-// ログインしている && 操作していない時間が30分の時にログアウトさせる
+//when logged in user is inactive, automatically log them off.
 app.use((request, response, next)=> {
   // ユーザーが存在しない場合
   if(!request.session.user) {
@@ -38,7 +38,7 @@ app.use((request, response, next)=> {
     }
     response.redirect('/index.html');
   } else {
-    // セッションが切れていない時、ユーザーが存在する場合何もしない
+    // when session is not expired
     next()
   }
 })
@@ -243,9 +243,11 @@ function isValidUserInfo(input_email, input_password) {
       qty_obj['fullname'] = users_reg_data[input_email].name;
       console.log(request.session.previousPage)
       if(request.session.previousPage === 'shopping.html') {
+        request.session.user_email = input_email;
         response.redirect('./invoice.html?' + qs.stringify(qty_obj));    //send quantity entred as string to invoice.html        
       } else {
         // Store quantity data
+        request.session.user_email = input_email;
         response.redirect('./store.html?key=Mystery&' + qs.stringify(qty_obj));    //send quantity entred as string to invoice.html
       }
       }
@@ -512,16 +514,51 @@ app.get("/get_user", async function (request, response) {
 
 // Load nodemailer package
 const nodemailer = require('nodemailer');
-const { request } = require('http');
 app.get("/checkout", function (request, response) {
-  // if the user is not logged in
-  if(!request.session.user) {
-    // if the user is not logged in
-    response.redirect('./login.html?' + qs.stringify(qty_obj));        
-  } else {
-    response.redirect('./invoice.html?' + qs.stringify(qty_obj));    //send quantity entred as string to invoice.html
+  console.log("request.session.user_email" + request.session.user_email)
+  // Generate HTML invoice string
+    var invoice_str = `Thank you for your order!<table border><th>Quantity</th><th>Item</th>`;
+    var shopping_cart = request.session.cart;
+    for(product_key in shopping_cart) {
+      for(i=0; i<shopping_cart[product_key].length; i++) {
+          if(typeof shopping_cart[product_key] == 'undefined') continue;
+          qty = shopping_cart[product_key][i];
+          if(qty > 0) {
+            invoice_str += `<tr><td>${qty}</td><td>${shopping_cart[product_key][i].name}</td><tr>`;
+          }
+      }
   }
+    invoice_str += '</table>';
+    console.log("invoice_str" + invoice_str)
+  // Set up mail server. Only will work on UH Network due to security restrictions
+    var transporter = nodemailer.createTransport({
+      host: "mail.hawaii.edu",
+      port: 25,
+      secure: false, // use TLS
+      tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false
+      }
+    });
+  
+    var user_email = request.session.user_email;
+    var mailOptions = {
+      from: 'phoney_store@bogus.com',
+      to: user_email,
+      subject: 'Your phoney invoice',
+      html: invoice_str
+    };
+  
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error)
+        invoice_str += '<br>There was an error and your invoice could not be emailed :(';
+      } else {
+        invoice_str += `<br>Your invoice was mailed to ${user_email}`;
+      }
+      response.send(invoice_str);
+    });
+    response.redirect('./complete.html?')
   });
-
 // ------------------ Start server ---------------------//
 app.listen(8080, () => console.log(`listening on port 8080`));

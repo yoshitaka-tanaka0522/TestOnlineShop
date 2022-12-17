@@ -283,3 +283,10 @@ line-height: 1.6;
   margin: 0;
   text-align: center;
 }
+
+.wrap{
+  width:100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}

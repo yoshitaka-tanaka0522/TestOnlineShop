@@ -362,4 +362,4 @@ if (Object.keys(registration_update_errors).length == 0) {
 })  
 
 // ------------------ Start server ---------------------//
-app.listen(8080, () => console.log(`listening on port 8000`));
+app.listen(2000, () => console.log(`listening on port 2000`));

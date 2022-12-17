@@ -217,3 +217,9 @@ header .icons a:hover{
 .subtotal{
 border: #999;
 }
+.wrap{
+  width:100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}

@@ -22,11 +22,11 @@
 <!-- identifying which type of files used -->
     <script type="text/javascript"> </script>
     <script>
+    var total = 0;
     var displayInvoice = function() {
-      var total = 0;
-      var contentHtml = ``;
+      var invoiceHtml = ``;
       if (!cart_data) {
-        contentHtml += `<b>invoice is empty</b>`;
+        invoiceHtml += `<b>invoice is empty</b>`;
       } else {
         for (var key in products) {
           if (!cart_data[key] || !cart_data[key].length === 0) {
@@ -37,19 +37,17 @@
               if (!(cart_data[key][i])) {
                 continue;
               } else {
-                var extended_price = (cart_data[key][i].price * quantities[i]) //calculate extended price = quantity entered times product price 
+                var extended_price = (products[key][i].price * cart_data[key][i]) //calculate extended price = quantity entered times product price 
                 subtotal = subtotal + extended_price;    //calculate subtotal                
-                contentHtml += `
-                <tbody class="text-95 text-secondary-d3">
+                invoiceHtml += `
             <tr></tr>
             <tr>
             <td>${[i+1]}</td>
-            <td><img src="${products[i].image}" style="width:5%" alt="Image">${products[i]['name']}</td>
-            <td>${quantities[i]}</td>
-            <td class="text-95">$${products[i]['price'].toFixed(2)}</td>
-            <td class="text-secondary-d2">$${(products[i]['price'] * quantities[i]).toFixed(2)}</td>
-        </tr> 
-        </tbody>
+            <td><img src="${products[key][i].image}" style="width:5%" alt="Image">${products[key][i]['name']}</td>
+            <td>${cart_data[key][i]}</td>
+            <td class="text-95">$${products[key][i]['price'].toFixed(2)}</td>
+            <td class="text-secondary-d2">$${(products[key][i]['price'] * cart_data[key][i]).toFixed(2)}</td>
+        </tr>
                   `;
                   total += products[key][i].price * cart_data[key][i]
               }
@@ -57,26 +55,28 @@
           }
         }
 
-                    //taken from invoice.html from store 1 WODs 
-                    //Compute tax 
-                    let tax_rate = 0.05;
-                    let tax = tax_rate * subtotal;
+        document.getElementById("invoiceHtml").innerHTML = invoiceHtml;
 
-                    //Computer shipping 
-                    if (subtotal <= 15) {     //when shipping is less than $15, then shipping costs $3
-                     shipping = 3;            
-                        }
-                    else if (subtotal <= 50) {    //when shipping is less than  equal to $50, then shipping costs $5
-                    shipping = 5;                 
-                    }
-                    else {
-                    shipping = 0.05 * subtotal;     //other than conditions above, shipping is 4% of subtotal    
-                    }
+        //taken from invoice.html from store 1 WODs 
+        //Compute tax 
+        let tax_rate = 0.05;
+        let tax = tax_rate * subtotal;
+
+        //Computer shipping 
+        if (subtotal <= 15) { //when shipping is less than $15, then shipping costs $3
+            shipping = 3;            
+            }
+        else if (subtotal <= 50) { //when shipping is less than  equal to $50, then shipping costs $5
+        shipping = 5;                 
+        }
+        else {
+        shipping = 0.05 * subtotal; //other than conditions above, shipping is 4% of subtotal    
+        }
 
 
-                    //Compute grand total
-                     let total = subtotal + tax + shipping; 
-                     var footer
+        //Compute grand total
+            let total2 = total + tax + shipping; 
+            var footerHTML = 
                      `
                         <div class="col-12 col-sm-10 text-grey text-90 order-first order-sm-last">
                             <div class="row my-2">
@@ -108,14 +108,13 @@
                                     Total Amount
                                 </div>
                                 <div class="col-5">
-                                    <span class="text-150 text-success-d3 opacity-2">$${total.toFixed(2)}</span>
+                                    <span class="text-150 text-success-d3 opacity-2">$${total2.toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>`
+                        document.getElementById("footerHtml").innerHTML = footerHTML
 
       }
-      document.getElementById("total").textContent = `$${total}`;
-      document.getElementById("cartContent").insertAdjacentHTML('beforebegin', contentHtml);
       var deleteButton = document.getElementsByClassName('deleteButton')
       for(var i=0; i < deleteButton.length; i++) {
         deleteButton[i].addEventListener('click', function(e) {
@@ -172,7 +171,7 @@
 </head>
 <body>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-<form name="qtyTextbox" action="/purchase" method="GET"> </form>  <!--loading quantity entered on store.html through server-->
+<form name="qtyTextbox" action="/checkout" method="GET">  <!--loading quantity entered on store.html through server-->
 <div class="page-content container">
     <div class="page-header text-blue-d2">
 
@@ -236,19 +235,19 @@
                                 <th width="140">Extended price</th>
                             </tr>
                         </thead>
-                        
+                        <tbody id="invoiceHtml" class="text-95 text-secondary-d3">
+                        </tbody>
                         <script>
                         // taking quary string to array 
                         // copied from invoice.html from store 1 WODs
                             let params = (new URL(document.location)).searchParams;
                             let quantities = JSON.parse(params.get("quantity"));
                         </script>
-
                     </table>
                     </div>
-
                     <div class="row border-b-2 brc-default-l2"></div>
                     </div>
+                    <span id="footerHtml"></span>
                     <hr />
                     
                 </div>
@@ -258,7 +257,7 @@
 </div>
 
     <center><table class = "policy"> 
-       <button><a href="complete.html">Submit</a></button>
+       <button><a>Submit</a></button>
 
         <tr>
             <td colspan="4"> <strong>
@@ -276,7 +275,6 @@
     </table> 
 </center>
 </style>
-
-   <p></p>
+</form>
 </body>
 </html>

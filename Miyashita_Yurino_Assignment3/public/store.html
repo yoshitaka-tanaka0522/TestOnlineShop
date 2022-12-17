@@ -65,6 +65,8 @@
                    document.getElementById(`quantity${i}`).value = quantity[i];
                  });
                }
+               let fullname = params.get('fullname');
+               document.getElementById("fullname").textContent = `${fullname} loggedin`;
           }
    </script>
 </head>
@@ -91,7 +93,8 @@
 
 <!--product section starts-->
 <form action="/add_to_cart" method="POST">
-<div id="wrap" class="wrapp">
+<span id="fullname" style="display: block; width: 300px; color: blue; margin: 10px 0px 10px 20px; font-size: 1.5em; font-weight: bold; height: 100px; line-height: 100px;"></span>
+<div id="wrap" class="wrap">
 </div>
 </form>
 <!--products section ends-->
