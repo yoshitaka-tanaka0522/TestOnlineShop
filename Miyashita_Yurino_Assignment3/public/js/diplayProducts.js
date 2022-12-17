@@ -36,7 +36,7 @@ function displayProducts(key) {
             <label id="quantity${i}_label"> Enter Quantity Desired: </label>
 
             <div class="input">
-            <input id="quantity${i}" name="quantities[${i}]" type="text" placeholder = "Quantity Available: ${products[key][i].quantity_available}" name = "quantity" onkeyup="checkQuantityTextbox(this, 'Mystery');"></div>
+            <input id="quantity${i}" name="quantities[${i}]" type="text" placeholder = "Quantity Available: ${products[key][i].quantity_available}" name = "quantity" onkeyup="checkQuantityTextbox(this, '${key}');"></div>
         </div>
     </div>
 </div>

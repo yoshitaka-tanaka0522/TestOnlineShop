@@ -22,7 +22,7 @@ app.use(
     cookie: {
       path: '/', // default
       httpOnly: true, // default
-      maxAge: 10 * 3000, //
+      maxAge: 10 * 2000, //
     },
   }));
 
@@ -38,7 +38,7 @@ app.use((request, response, next)=> {
     }
     response.redirect('/index.html');
   } else {
-    // ユーザーが存在する場合
+    // セッションが切れていない時、ユーザーが存在する場合何もしない
     next()
   }
 })
@@ -117,45 +117,45 @@ app.get("/products.json", function (request, response, next) {
 });
 
 // Process purchase request (validate quantities, check quantity available)
-// app.post("/purchase", function (request, response, next) {
-//   console.log(request.body); //getting request from invoice.html body
-//   let quantities = request.body['quantity']; //assigning value to quantities as quantity entred in store.html textbox
-//   let errors = {};
-//   let available_quantity = false;
-//   for (i in quantities) {
-//     console.log(quantities[i])    
-//     if (notAPosInt(quantities[i]) == false) {
-//       errors['quantity' + i] = `Please submit valid data for ${products[i].name}!` //if quantity enetred is invalid number 
-//     }
-//     if (quantities[i] > 0) { //if quantity entered is greater than, meaning no errors
-//       available_quantity = true;
-//     }
-//     if (quantities[i] > products[i].quantity_available) { //if quantity entered is greater than quantity available 
-//       errors['quantity' + i] = `We currenly don't have ${(quantities[i])}${products[i].name}. please check our website later!`
-//     }
-//   }
-//   //taking quantity entered to display in invoice and direct to log in page
-//   //changed login.html from invoice.html
-//   let quantity_object = {
-//     "quantity": JSON.stringify(quantities)
-//   }; //creating string by quantity_object
-//   console.log(Object.keys(errors));
-//   if (Object.keys(errors).length == 0) { //no errors, 
-//     for (i in quantities) { //remove purchase quantity from inventory
-//       products[i].quantity_available -= Number(quantities[i]);
-//     }
-//     // Save quantity requested
-//     qty_obj = quantity_object
-//     //sends invoice with quantity with quary string
-//     response.redirect('./login.html?' + qs.stringify(quantity_object)); //inserting value as quary string to invoice.html table 
-//   } else { //with errors, redirect to login.html  
-//     let errors_obj = {
-//       "errors": JSON.stringify(errors)
-//     };
-//     console.log(qs.stringify(quantity_object));
-//     response.redirect('./store.html?' + qs.stringify(quantity_object) + '&' + qs.stringify(errors_obj)); //redirect to store.html and display errors 
-//   }
-// });
+app.post("/test", function (request, response, next) {
+  console.log(request.body); //getting request from invoice.html body
+  let quantities = request.body['quantity']; //assigning value to quantities as quantity entred in store.html textbox
+  let errors = {};
+  let available_quantity = false;
+  for (i in quantities) {
+    console.log(quantities[i])    
+    if (notAPosInt(quantities[i]) == false) {
+      errors['quantity' + i] = `Please submit valid data for ${products[i].name}!` //if quantity enetred is invalid number 
+    }
+    if (quantities[i] > 0) { //if quantity entered is greater than, meaning no errors
+      available_quantity = true;
+    }
+    if (quantities[i] > products[i].quantity_available) { //if quantity entered is greater than quantity available 
+      errors['quantity' + i] = `We currenly don't have ${(quantities[i])}${products[i].name}. please check our website later!`
+    }
+  }
+  //taking quantity entered to display in invoice and direct to log in page
+  //changed login.html from invoice.html
+  let quantity_object = {
+    "quantity": JSON.stringify(quantities)
+  }; //creating string by quantity_object
+  console.log(Object.keys(errors));
+  if (Object.keys(errors).length == 0) { //no errors, 
+    for (i in quantities) { //remove purchase quantity from inventory
+      products[i].quantity_available -= Number(quantities[i]);
+    }
+    // Save quantity requested
+    qty_obj = quantity_object
+    //sends invoice with quantity with quary string
+    response.redirect('./login.html?' + qs.stringify(quantity_object)); //inserting value as quary string to invoice.html table 
+  } else { //with errors, redirect to login.html  
+    let errors_obj = {
+      "errors": JSON.stringify(errors)
+    };
+    console.log(qs.stringify(quantity_object));
+    response.redirect('./store.html?' + qs.stringify(quantity_object) + '&' + qs.stringify(errors_obj)); //redirect to store.html and display errors 
+  }
+});
 
 // Process purchase request (validate quantities, check quantity available)
 app.get("/purchase", function (request, response, next) {
@@ -165,7 +165,8 @@ app.get("/purchase", function (request, response, next) {
   let quantity_object = {
     "quantity": JSON.stringify(shopping_cart)
   };
-  if(!request.session.user) {
+  if(!request.session.user.loggedIn) {
+    request.session.previousPage = 'shopping.html';
     // if the user is not logged in
     response.redirect('./login.html?' + qs.stringify(qty_obj));
   } else {
@@ -240,8 +241,13 @@ function isValidUserInfo(input_email, input_password) {
       //the password matches, use the object to pass the email address and full name to the next screen.
       qty_obj['email'] = input_email;
       qty_obj['fullname'] = users_reg_data[input_email].name;
+      console.log(request.session.previousPage)
+      if(request.session.previousPage === 'shopping.html') {
+        response.redirect('./invoice.html?' + qs.stringify(qty_obj));    //send quantity entred as string to invoice.html        
+      } else {
         // Store quantity data
         response.redirect('./store.html?key=Mystery&' + qs.stringify(qty_obj));    //send quantity entred as string to invoice.html
+      }
       }
       return;
   });
@@ -429,22 +435,62 @@ if (Object.keys(registration_update_errors).length == 0) {
     }
 })
 
-var quantities = [];
-app.get("/add_to_cart", function (request, response) {
-  var products_key = request.query['products_key']; // get the product key sent from the form post
-  console.log(`products_key--${products_key}`);
-  request.query['quantities'].map(function(quantity, i) {
-    if(quantity) {
-      quantities[i] = Number(quantity);
+  // request.query['quantities'].map(function(quantity, i) {
+  //   if(quantity) {
+  //     quantities[i] = Number(quantity);
+  //   }
+  // });
+var productsObj = {};
+app.post("/add_to_cart", function (request, response) {
+  var products_key = request.body['products_key']; // get the product key sent from the form post
+  let quantities = request.body['quantities']; //assigning value to quantities as quantity entred in store.html textbox
+  let errors = {};
+  let available_quantity = false;
+  for (i in quantities) {
+    console.log(quantities[i])    
+    if (notAPosInt(quantities[i]) == false) {
+      errors['quantity' + i] = `Please submit valid data for ${products[products_key][i].name}!` //if quantity enetred is invalid number 
     }
-  });// Get quantities from the form post and convert strings from form post to numbers
-  request.session.cart[products_key] = quantities; // store the quantities array in the session cart object with the same products_key. 
-  console.log(`quantities--${quantities}`);
-  response.redirect(`./store.html?key=${products_key}`);
+    if (quantities[i] > 0) { //if quantity entered is greater than, meaning no errors
+      available_quantity = true;
+    }
+    if (quantities[i] > products[products_key][i].quantity_available) { //if quantity entered is greater than quantity available 
+      errors['quantity' + i] = `We currenly don't have ${(quantities[i])}${products[products_key][i].name}. please check our website later!`
+    }
+  }
+  
+  //taking quantity entered to display in invoice and direct to log in page
+  //changed login.html from invoice.html
+  let quantity_object = {
+    "quantity": JSON.stringify(quantities)
+  }; //creating string by quantity_object
+  console.log(Object.keys(errors));
+  if (Object.keys(errors).length == 0) { //no errors, 
+    for (i in quantities) { //remove purchase quantity from inventory
+      products[products_key][i].quantity_available -= Number(quantities[i]);
+    }
+    if(productsObj.products_key === undefined) {
+      productsObj[products_key] = quantities
+    } else {
+      productsObj.products_key = quantities
+    }
+    response.cookie('products', JSON.stringify(productsObj))
+    // Save quantity requested
+    qty_obj = quantity_object
+    request.session.cart[products_key] = quantities; // store the quantities array in the session cart object with the same products_key. 
+    response.redirect(`./store.html?key=${products_key}&` + qs.stringify(quantity_object));    
+  } else {
+    let errors_obj = {
+      "errors": JSON.stringify(errors)
+    };
+    console.log(qs.stringify(quantity_object));
+    response.redirect(`./store.html?key=${products_key}&` + qs.stringify(quantity_object) + '&' + qs.stringify(errors_obj)); //redirect to store.html and display errors 
+  }
 });
 
 // Get and return cart information from session
 app.get("/get_cart", async function (request, response) {
+  console.log(request.cookies.products)
   return response.json(request.session.cart);
 });
 
@@ -455,6 +501,7 @@ app.get("/delete_cart", async function (request, response) {
   console.log("productKey" + products_key)
   console.log("index" + index)
   request.session.cart[products_key][index] = 0;
+  request.cookies.products[products_key][index] = 0;
   response.redirect(`./shoppingcart.html`);
 });
 

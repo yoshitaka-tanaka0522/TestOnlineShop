@@ -60,11 +60,12 @@
           xhr.send();
           xhr.onreadystatechange = function() {
           if(xhr.readyState === 4 && xhr.status === 200) {
-              var data = JSON.parse(xhr.responseText); 
-              if(!(Object.keys(data).length === 0)) {
-                alert('ok')
-              };
-              window.href="/shopping.html";
+              const result = confirm(`Do you want to delete ${products[productKey][index].name}?`)
+              if(result) {
+                location.href ="/shoppingcart.html";
+              } else {
+                return false;
+              }
           }
           }          
         })

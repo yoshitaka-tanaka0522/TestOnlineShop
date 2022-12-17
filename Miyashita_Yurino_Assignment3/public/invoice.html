@@ -21,11 +21,127 @@
 
 <!-- identifying which type of files used -->
     <script type="text/javascript"> </script>
-
-
     <script>
+    var displayInvoice = function() {
+      var total = 0;
+      var contentHtml = ``;
+      if (!cart_data) {
+        contentHtml += `<b>invoice is empty</b>`;
+      } else {
+        for (var key in products) {
+          if (!cart_data[key] || !cart_data[key].length === 0) {
+            continue;
+          } else {
+            var subtotal = 0;
+            for (var i = 0; i < products[key].length; i++) {
+              if (!(cart_data[key][i])) {
+                continue;
+              } else {
+                var extended_price = (cart_data[key][i].price * quantities[i]) //calculate extended price = quantity entered times product price 
+                subtotal = subtotal + extended_price;    //calculate subtotal                
+                contentHtml += `
+                <tbody class="text-95 text-secondary-d3">
+            <tr></tr>
+            <tr>
+            <td>${[i+1]}</td>
+            <td><img src="${products[i].image}" style="width:5%" alt="Image">${products[i]['name']}</td>
+            <td>${quantities[i]}</td>
+            <td class="text-95">$${products[i]['price'].toFixed(2)}</td>
+            <td class="text-secondary-d2">$${(products[i]['price'] * quantities[i]).toFixed(2)}</td>
+        </tr> 
+        </tbody>
+                  `;
+                  total += products[key][i].price * cart_data[key][i]
+              }
+            }
+          }
+        }
+
+                    //taken from invoice.html from store 1 WODs 
+                    //Compute tax 
+                    let tax_rate = 0.05;
+                    let tax = tax_rate * subtotal;
+
+                    //Computer shipping 
+                    if (subtotal <= 15) {     //when shipping is less than $15, then shipping costs $3
+                     shipping = 3;            
+                        }
+                    else if (subtotal <= 50) {    //when shipping is less than  equal to $50, then shipping costs $5
+                    shipping = 5;                 
+                    }
+                    else {
+                    shipping = 0.05 * subtotal;     //other than conditions above, shipping is 4% of subtotal    
+                    }
+
+
+                    //Compute grand total
+                     let total = subtotal + tax + shipping; 
+                     var footer
+                     `
+                        <div class="col-12 col-sm-10 text-grey text-90 order-first order-sm-last">
+                            <div class="row my-2">
+                                <div class="col-7 text-right">
+                                    Subtotal
+                                </div>
+                                <div class="col-5">
+                                    <span class="text-120 text-secondary-d1">$${subtotal.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col-7 text-right">
+                                    Tax (5%)
+                                </div>
+                                <div class="col-5">
+                                    <span class="text-110 text-secondary-d1">$${tax.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col-7 text-right">
+                                   Shipping
+                                </div>
+                                <div class="col-5">
+                                    <span class="text-110 text-secondary-d1">$${shipping.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div class="row my-2 align-items-center bgc-primary-l3 p-2">
+                                <div class="col-7 text-right">
+                                    Total Amount
+                                </div>
+                                <div class="col-5">
+                                    <span class="text-150 text-success-d3 opacity-2">$${total.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </div>`
+
+      }
+      document.getElementById("total").textContent = `$${total}`;
+      document.getElementById("cartContent").insertAdjacentHTML('beforebegin', contentHtml);
+      var deleteButton = document.getElementsByClassName('deleteButton')
+      for(var i=0; i < deleteButton.length; i++) {
+        deleteButton[i].addEventListener('click', function(e) {
+          var productKey = e.target.id.split('-')[0];
+          var index = e.target.id.split('-')[1]
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', `http://localhost:8080/delete_cart?products_key=${productKey}&index=${index}`);
+          xhr.send();
+          xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4 && xhr.status === 200) {
+              const result = confirm(`Do you want to delete ${products[productKey][index].name}?`)
+              if(result) {
+                location.href ="/shoppingcart.html";
+              } else {
+                return false;
+              }
+          }
+          }          
+        })
+      }
+    }
+
+
+
         // taken from Example Assignment 1
-        window.onload = function () {    
+        window.onload = function () { 
           let params = (new URL(document.location)).searchParams;
           if (params.has('quantity')) {
             let quantity = JSON.parse(params.get('quantity'));
@@ -37,6 +153,21 @@
           let fullname = params.get('fullname');
           document.getElementById("fullname").textContent = fullname;
         }
+
+        var cart_data = '';
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:8080/get_cart');
+        xhr.send();
+        xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText); 
+            if(!(Object.keys(data).length === 0)) {
+            // shopping_cart = data;
+              cart_data = data;
+            };
+            displayInvoice();
+        }
+        }        
       </script>
 </head>
 <body>
@@ -113,96 +244,11 @@
                             let quantities = JSON.parse(params.get("quantity"));
                         </script>
 
-
-<script> 
-    var subtotal = 0;
-    for (i = 0; i < products.length; i++) {
-        var extended_price = (products[i].price * quantities[i]) //calculate extended price = quantity entered times product price 
-        subtotal = subtotal + extended_price;    //calculate subtotal 
-        if (quantities[i] != 0) {      //i is not qual to 0 
-            document.write(`
-            <tbody class="text-95 text-secondary-d3">
-            <tr></tr>
-            <tr>
-            <td>${[i+1]}</td>
-            <td><img src="${products[i].image}" style="width:5%" alt="Image">${products[i]['name']}</td>
-            <td>${quantities[i]}</td>
-            <td class="text-95">$${products[i]['price'].toFixed(2)}</td>
-            <td class="text-secondary-d2">$${(products[i]['price'] * quantities[i]).toFixed(2)}</td>
-        </tr> 
-        </tbody>
-       `);
-
-         };
-    }    
-    </script>
-
                     </table>
                     </div>
 
                     <div class="row border-b-2 brc-default-l2"></div>
                     </div>
-
-                   <script>
-                    //taken from invoice.html from store 1 WODs 
-                    //Compute tax 
-                    let tax_rate = 0.05;
-                    let tax = tax_rate * subtotal;
-
-                    //Computer shipping 
-                    if (subtotal <= 15) {     //when shipping is less than $15, then shipping costs $3
-                     shipping = 3;            
-                        }
-                    else if (subtotal <= 50) {    //when shipping is less than  equal to $50, then shipping costs $5
-                    shipping = 5;                 
-                    }
-                    else {
-                    shipping = 0.05 * subtotal;     //other than conditions above, shipping is 4% of subtotal    
-                    }
-
-
-                    //Compute grand total
-                     let total = subtotal + tax + shipping;
-
-
-                        document.write(`    
-                        <div class="col-12 col-sm-10 text-grey text-90 order-first order-sm-last">
-                            <div class="row my-2">
-                                <div class="col-7 text-right">
-                                    Subtotal
-                                </div>
-                                <div class="col-5">
-                                    <span class="text-120 text-secondary-d1">$${subtotal.toFixed(2)}</span>
-                                </div>
-                            </div>
-                            <div class="row my-2">
-                                <div class="col-7 text-right">
-                                    Tax (5%)
-                                </div>
-                                <div class="col-5">
-                                    <span class="text-110 text-secondary-d1">$${tax.toFixed(2)}</span>
-                                </div>
-                            </div>
-                            <div class="row my-2">
-                                <div class="col-7 text-right">
-                                   Shipping
-                                </div>
-                                <div class="col-5">
-                                    <span class="text-110 text-secondary-d1">$${shipping.toFixed(2)}</span>
-                                </div>
-                            </div>
-                            <div class="row my-2 align-items-center bgc-primary-l3 p-2">
-                                <div class="col-7 text-right">
-                                    Total Amount
-                                </div>
-                                <div class="col-5">
-                                    <span class="text-150 text-success-d3 opacity-2">$${total.toFixed(2)}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `)
-                    </script>
-                    
                     <hr />
                     
                 </div>
